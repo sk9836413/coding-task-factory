@@ -71,16 +71,16 @@
         "name": "no_normalize",
         "description": "Codes are not upper-cased or trimmed before matching",
         "killed": true,
-        "summary": "1 failed, 13 passed in 0.19s"
+        "summary": "1 failed, 13 passed in 0.24s"
       },
       {
         "name": "ignore_category",
         "description": "Discount applied to the whole cart instead of the eligible category",
         "killed": true,
-        "summary": "5 failed, 9 passed in 0.27s"
+        "summary": "5 failed, 9 passed in 0.21s"
       }
     ],
-    "start_summary": "7 failed, 7 passed in 0.22s",
+    "start_summary": "7 failed, 7 passed in 0.39s",
     "feature_tests_failing_at_start": 7,
     "solved_summary": "14 passed in 0.05s",
     "tests_total": 14,

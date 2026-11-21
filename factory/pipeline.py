@@ -78,7 +78,7 @@ def run(repo_path: Path, out: Path, n: int = 6, seed: int = 7, families: list[st
                       "a_solution_fails_b": cross_check(dirs[a.task_id], dirs[b.task_id]),
                       "b_solution_fails_a": cross_check(dirs[b.task_id], dirs[a.task_id])})
 
-    report = {"repo": str(repo.path), "repo_version": repo.version(), "seed": seed, "requested": n,
+    report = {"repo": repo.path.name, "repo_version": repo.version(), "seed": seed, "requested": n,
               "generated": len(tasks), "valid": len(valid_ids), "seconds": round(time.time() - t0, 1),
               "tasks": results, "distinctness": pairs,
               "params": {t.task_id: t.params for t in tasks}}

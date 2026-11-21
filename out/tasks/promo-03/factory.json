@@ -79,30 +79,30 @@
         "name": "no_normalize",
         "description": "Codes are not upper-cased or trimmed before matching",
         "killed": true,
-        "summary": "1 failed, 15 passed in 0.21s"
+        "summary": "1 failed, 15 passed in 0.37s"
       },
       {
         "name": "threshold_strict",
         "description": "Minimum spend uses > instead of >=",
         "killed": true,
-        "summary": "1 failed, 15 passed in 0.22s"
+        "summary": "1 failed, 15 passed in 0.73s"
       },
       {
         "name": "apply_time_check",
         "description": "Minimum spend checked only when the code is applied, never re-checked",
         "killed": true,
-        "summary": "2 failed, 14 passed in 0.25s"
+        "summary": "2 failed, 14 passed in 0.30s"
       },
       {
         "name": "ignore_cap",
         "description": "Maximum discount cap not applied",
         "killed": true,
-        "summary": "1 failed, 15 passed in 0.23s"
+        "summary": "1 failed, 15 passed in 0.41s"
       }
     ],
-    "start_summary": "9 failed, 7 passed in 0.34s",
+    "start_summary": "9 failed, 7 passed in 0.33s",
     "feature_tests_failing_at_start": 9,
-    "solved_summary": "16 passed in 0.06s",
+    "solved_summary": "16 passed in 0.08s",
     "tests_total": 16,
     "mutation_score": "4/4",
     "valid": true,

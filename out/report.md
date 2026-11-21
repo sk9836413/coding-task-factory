@@ -1,7 +1,7 @@
 # Task factory run
 
-- Repository: `E:\task-factory\sample_repo` at `sha256:74a426e496f4cc9c`
-- Seed 7: 9 tasks generated, **9 valid**, in 96.5 s
+- Repository: `sample_repo` at `sha256:74a426e496f4cc9c`
+- Seed 7: 9 tasks generated, **9 valid**, in 124.1 s
 - Known-wrong implementations rejected by the tests: **28/28**
 - Same-family task pairs whose reference solutions fail each other's tests: **9/9**
 

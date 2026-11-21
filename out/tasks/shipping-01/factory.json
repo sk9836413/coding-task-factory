@@ -66,28 +66,28 @@
         "name": "empty_charged",
         "description": "Empty carts are charged shipping",
         "killed": true,
-        "summary": "2 failed, 11 passed in 0.20s"
+        "summary": "2 failed, 11 passed in 0.22s"
       },
       {
         "name": "weight_floor",
         "description": "Weight charge counts whole kilograms instead of started kilograms",
         "killed": true,
-        "summary": "1 failed, 12 passed in 0.19s"
+        "summary": "1 failed, 12 passed in 0.23s"
       },
       {
         "name": "weight_includes_first_kg",
         "description": "The first kilogram is charged as extra weight",
         "killed": true,
-        "summary": "4 failed, 9 passed in 0.22s"
+        "summary": "4 failed, 9 passed in 0.23s"
       },
       {
         "name": "free_strict",
         "description": "Free-shipping threshold uses > instead of >=",
         "killed": true,
-        "summary": "1 failed, 12 passed in 0.19s"
+        "summary": "1 failed, 12 passed in 0.22s"
       }
     ],
-    "start_summary": "7 failed, 6 passed in 0.23s",
+    "start_summary": "7 failed, 6 passed in 0.22s",
     "feature_tests_failing_at_start": 7,
     "solved_summary": "13 passed in 0.06s",
     "tests_total": 13,

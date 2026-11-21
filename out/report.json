@@ -1,11 +1,11 @@
 {
-  "repo": "E:\\task-factory\\sample_repo",
+  "repo": "sample_repo",
   "repo_version": "sha256:74a426e496f4cc9c",
   "seed": 7,
   "requested": 9,
   "generated": 9,
   "valid": 9,
-  "seconds": 96.5,
+  "seconds": 124.1,
   "tasks": [
     {
       "task_id": "promo-01",
@@ -22,42 +22,42 @@
           "name": "no_normalize",
           "description": "Codes are not upper-cased or trimmed before matching",
           "killed": true,
-          "summary": "1 failed, 17 passed in 0.28s"
+          "summary": "1 failed, 17 passed in 0.70s"
         },
         {
           "name": "threshold_strict",
           "description": "Minimum spend uses > instead of >=",
           "killed": true,
-          "summary": "1 failed, 17 passed in 0.20s"
+          "summary": "1 failed, 17 passed in 0.37s"
         },
         {
           "name": "apply_time_check",
           "description": "Minimum spend checked only when the code is applied, never re-checked",
           "killed": true,
-          "summary": "3 failed, 15 passed in 0.24s"
+          "summary": "3 failed, 15 passed in 0.42s"
         },
         {
           "name": "ignore_cap",
           "description": "Maximum discount cap not applied",
           "killed": true,
-          "summary": "2 failed, 16 passed in 0.25s"
+          "summary": "2 failed, 16 passed in 0.40s"
         },
         {
           "name": "single_use_not_enforced",
           "description": "Same customer can reuse the code",
           "killed": true,
-          "summary": "1 failed, 17 passed in 0.24s"
+          "summary": "1 failed, 17 passed in 0.30s"
         },
         {
           "name": "burn_without_discount",
           "description": "Code marked as used even when it gave no discount",
           "killed": true,
-          "summary": "1 failed, 17 passed in 0.37s"
+          "summary": "1 failed, 17 passed in 0.23s"
         }
       ],
-      "start_summary": "11 failed, 7 passed in 0.24s",
+      "start_summary": "11 failed, 7 passed in 0.28s",
       "feature_tests_failing_at_start": 11,
-      "solved_summary": "18 passed in 0.06s",
+      "solved_summary": "18 passed in 0.12s",
       "tests_total": 18,
       "mutation_score": "6/6",
       "valid": true,
@@ -83,28 +83,28 @@
           "name": "empty_charged",
           "description": "Empty carts are charged shipping",
           "killed": true,
-          "summary": "2 failed, 11 passed in 0.20s"
+          "summary": "2 failed, 11 passed in 0.22s"
         },
         {
           "name": "weight_floor",
           "description": "Weight charge counts whole kilograms instead of started kilograms",
           "killed": true,
-          "summary": "1 failed, 12 passed in 0.19s"
+          "summary": "1 failed, 12 passed in 0.23s"
         },
         {
           "name": "weight_includes_first_kg",
           "description": "The first kilogram is charged as extra weight",
           "killed": true,
-          "summary": "4 failed, 9 passed in 0.22s"
+          "summary": "4 failed, 9 passed in 0.23s"
         },
         {
           "name": "free_strict",
           "description": "Free-shipping threshold uses > instead of >=",
           "killed": true,
-          "summary": "1 failed, 12 passed in 0.19s"
+          "summary": "1 failed, 12 passed in 0.22s"
         }
       ],
-      "start_summary": "7 failed, 6 passed in 0.23s",
+      "start_summary": "7 failed, 6 passed in 0.22s",
       "feature_tests_failing_at_start": 7,
       "solved_summary": "13 passed in 0.06s",
       "tests_total": 13,
@@ -130,18 +130,18 @@
           "name": "group_off_by_one",
           "description": "Counts groups of X instead of X+1 for buy X get 1 free",
           "killed": true,
-          "summary": "3 failed, 8 passed in 0.18s"
+          "summary": "3 failed, 8 passed in 0.21s"
         },
         {
           "name": "ignore_max",
           "description": "Free-item cap per order not applied",
           "killed": true,
-          "summary": "1 failed, 10 passed in 0.20s"
+          "summary": "1 failed, 10 passed in 0.25s"
         }
       ],
-      "start_summary": "4 failed, 7 passed in 0.19s",
+      "start_summary": "4 failed, 7 passed in 0.26s",
       "feature_tests_failing_at_start": 4,
-      "solved_summary": "11 passed in 0.04s",
+      "solved_summary": "11 passed in 0.05s",
       "tests_total": 11,
       "mutation_score": "2/2",
       "valid": true,
@@ -165,16 +165,16 @@
           "name": "no_normalize",
           "description": "Codes are not upper-cased or trimmed before matching",
           "killed": true,
-          "summary": "1 failed, 13 passed in 0.19s"
+          "summary": "1 failed, 13 passed in 0.24s"
         },
         {
           "name": "ignore_category",
           "description": "Discount applied to the whole cart instead of the eligible category",
           "killed": true,
-          "summary": "5 failed, 9 passed in 0.27s"
+          "summary": "5 failed, 9 passed in 0.21s"
         }
       ],
-      "start_summary": "7 failed, 7 passed in 0.22s",
+      "start_summary": "7 failed, 7 passed in 0.39s",
       "feature_tests_failing_at_start": 7,
       "solved_summary": "14 passed in 0.05s",
       "tests_total": 14,
@@ -202,18 +202,18 @@
           "name": "empty_charged",
           "description": "Empty carts are charged shipping",
           "killed": true,
-          "summary": "2 failed, 9 passed in 0.20s"
+          "summary": "2 failed, 9 passed in 0.23s"
         },
         {
           "name": "free_strict",
           "description": "Free-shipping threshold uses > instead of >=",
           "killed": true,
-          "summary": "1 failed, 10 passed in 0.18s"
+          "summary": "1 failed, 10 passed in 0.21s"
         }
       ],
-      "start_summary": "5 failed, 6 passed in 0.19s",
+      "start_summary": "5 failed, 6 passed in 0.22s",
       "feature_tests_failing_at_start": 5,
-      "solved_summary": "11 passed in 0.04s",
+      "solved_summary": "11 passed in 0.05s",
       "tests_total": 11,
       "mutation_score": "2/2",
       "valid": true,
@@ -237,18 +237,18 @@
           "name": "group_off_by_one",
           "description": "Counts groups of X instead of X+1 for buy X get 1 free",
           "killed": true,
-          "summary": "2 failed, 9 passed in 0.18s"
+          "summary": "2 failed, 9 passed in 0.31s"
         },
         {
           "name": "ignore_max",
           "description": "Free-item cap per order not applied",
           "killed": true,
-          "summary": "1 failed, 10 passed in 0.17s"
+          "summary": "1 failed, 10 passed in 0.30s"
         }
       ],
-      "start_summary": "4 failed, 7 passed in 0.19s",
+      "start_summary": "4 failed, 7 passed in 0.20s",
       "feature_tests_failing_at_start": 4,
-      "solved_summary": "11 passed in 0.04s",
+      "solved_summary": "11 passed in 0.07s",
       "tests_total": 11,
       "mutation_score": "2/2",
       "valid": true,
@@ -272,30 +272,30 @@
           "name": "no_normalize",
           "description": "Codes are not upper-cased or trimmed before matching",
           "killed": true,
-          "summary": "1 failed, 15 passed in 0.21s"
+          "summary": "1 failed, 15 passed in 0.37s"
         },
         {
           "name": "threshold_strict",
           "description": "Minimum spend uses > instead of >=",
           "killed": true,
-          "summary": "1 failed, 15 passed in 0.22s"
+          "summary": "1 failed, 15 passed in 0.73s"
         },
         {
           "name": "apply_time_check",
           "description": "Minimum spend checked only when the code is applied, never re-checked",
           "killed": true,
-          "summary": "2 failed, 14 passed in 0.25s"
+          "summary": "2 failed, 14 passed in 0.30s"
         },
         {
           "name": "ignore_cap",
           "description": "Maximum discount cap not applied",
           "killed": true,
-          "summary": "1 failed, 15 passed in 0.23s"
+          "summary": "1 failed, 15 passed in 0.41s"
         }
       ],
-      "start_summary": "9 failed, 7 passed in 0.34s",
+      "start_summary": "9 failed, 7 passed in 0.33s",
       "feature_tests_failing_at_start": 9,
-      "solved_summary": "16 passed in 0.06s",
+      "solved_summary": "16 passed in 0.08s",
       "tests_total": 16,
       "mutation_score": "4/4",
       "valid": true,
@@ -321,30 +321,30 @@
           "name": "empty_charged",
           "description": "Empty carts are charged shipping",
           "killed": true,
-          "summary": "2 failed, 11 passed in 0.21s"
+          "summary": "2 failed, 11 passed in 0.37s"
         },
         {
           "name": "free_strict",
           "description": "Free-shipping threshold uses > instead of >=",
           "killed": true,
-          "summary": "1 failed, 12 passed in 0.20s"
+          "summary": "1 failed, 12 passed in 0.31s"
         },
         {
           "name": "express_ignored",
           "description": "Express surcharge never added",
           "killed": true,
-          "summary": "2 failed, 11 passed in 0.19s"
+          "summary": "2 failed, 11 passed in 0.31s"
         },
         {
           "name": "express_free_wrong",
           "description": "Express orders get (or lose) free shipping against the rules",
           "killed": true,
-          "summary": "1 failed, 12 passed in 0.19s"
+          "summary": "1 failed, 12 passed in 0.27s"
         }
       ],
-      "start_summary": "7 failed, 6 passed in 0.28s",
+      "start_summary": "7 failed, 6 passed in 0.30s",
       "feature_tests_failing_at_start": 7,
-      "solved_summary": "13 passed in 0.13s",
+      "solved_summary": "13 passed in 0.07s",
       "tests_total": 13,
       "mutation_score": "4/4",
       "valid": true,
@@ -368,18 +368,18 @@
           "name": "group_off_by_one",
           "description": "Counts groups of X instead of X+1 for buy X get 1 free",
           "killed": true,
-          "summary": "1 failed, 10 passed in 0.23s"
+          "summary": "1 failed, 10 passed in 0.22s"
         },
         {
           "name": "ignore_max",
           "description": "Free-item cap per order not applied",
           "killed": true,
-          "summary": "1 failed, 10 passed in 0.18s"
+          "summary": "1 failed, 10 passed in 0.30s"
         }
       ],
-      "start_summary": "4 failed, 7 passed in 0.19s",
+      "start_summary": "4 failed, 7 passed in 0.32s",
       "feature_tests_failing_at_start": 4,
-      "solved_summary": "11 passed in 0.04s",
+      "solved_summary": "11 passed in 0.07s",
       "tests_total": 11,
       "mutation_score": "2/2",
       "valid": true,
