@@ -1,0 +1,96 @@
+{
+  "task_id": "promo-02",
+  "title": "Add the WEEKEND promo code to the cart",
+  "family": "promo",
+  "params": {
+    "code": "WEEKEND",
+    "kind": "percent",
+    "pct": 5,
+    "cap": null,
+    "category": "stationery",
+    "threshold_on": "cart",
+    "min_subtotal": null,
+    "single_use": false
+  },
+  "signature": [
+    [
+      "cap",
+      null
+    ],
+    [
+      "category",
+      "stationery"
+    ],
+    [
+      "kind",
+      "percent"
+    ],
+    [
+      "min_subtotal",
+      null
+    ],
+    [
+      "pct",
+      5
+    ],
+    [
+      "single_use",
+      false
+    ],
+    [
+      "threshold_on",
+      "cart"
+    ]
+  ],
+  "repo_version": "sha256:74a426e496f4cc9c",
+  "mutants": [
+    {
+      "name": "no_normalize",
+      "description": "Codes are not upper-cased or trimmed before matching"
+    },
+    {
+      "name": "ignore_category",
+      "description": "Discount applied to the whole cart instead of the eligible category"
+    }
+  ],
+  "skipped_mutants": [
+    "round_half_up"
+  ],
+  "validation": {
+    "task_id": "promo-02",
+    "checks": {
+      "repo_ok": true,
+      "rejects_start": true,
+      "solution_applies": true,
+      "solvable": true,
+      "stable": true,
+      "all_mutants_killed": true
+    },
+    "mutants": [
+      {
+        "name": "no_normalize",
+        "description": "Codes are not upper-cased or trimmed before matching",
+        "killed": true,
+        "summary": "1 failed, 13 passed in 0.19s"
+      },
+      {
+        "name": "ignore_category",
+        "description": "Discount applied to the whole cart instead of the eligible category",
+        "killed": true,
+        "summary": "5 failed, 9 passed in 0.27s"
+      }
+    ],
+    "start_summary": "7 failed, 7 passed in 0.22s",
+    "feature_tests_failing_at_start": 7,
+    "solved_summary": "14 passed in 0.05s",
+    "tests_total": 14,
+    "mutation_score": "2/2",
+    "valid": true,
+    "family": "promo",
+    "title": "Add the WEEKEND promo code to the cart",
+    "skipped_mutants": [
+      "round_half_up"
+    ],
+    "difficulty": "medium"
+  }
+}

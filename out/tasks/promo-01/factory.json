@@ -1,0 +1,136 @@
+{
+  "task_id": "promo-01",
+  "title": "Add the THANKYOU promo code to the cart",
+  "family": "promo",
+  "params": {
+    "code": "THANKYOU",
+    "kind": "percent",
+    "pct": 20,
+    "cap": 30000,
+    "category": null,
+    "threshold_on": "cart",
+    "min_subtotal": 65400,
+    "single_use": true
+  },
+  "signature": [
+    [
+      "cap",
+      30000
+    ],
+    [
+      "category",
+      null
+    ],
+    [
+      "kind",
+      "percent"
+    ],
+    [
+      "min_subtotal",
+      65400
+    ],
+    [
+      "pct",
+      20
+    ],
+    [
+      "single_use",
+      true
+    ],
+    [
+      "threshold_on",
+      "cart"
+    ]
+  ],
+  "repo_version": "sha256:74a426e496f4cc9c",
+  "mutants": [
+    {
+      "name": "no_normalize",
+      "description": "Codes are not upper-cased or trimmed before matching"
+    },
+    {
+      "name": "threshold_strict",
+      "description": "Minimum spend uses > instead of >="
+    },
+    {
+      "name": "apply_time_check",
+      "description": "Minimum spend checked only when the code is applied, never re-checked"
+    },
+    {
+      "name": "ignore_cap",
+      "description": "Maximum discount cap not applied"
+    },
+    {
+      "name": "single_use_not_enforced",
+      "description": "Same customer can reuse the code"
+    },
+    {
+      "name": "burn_without_discount",
+      "description": "Code marked as used even when it gave no discount"
+    }
+  ],
+  "skipped_mutants": [
+    "round_half_up"
+  ],
+  "validation": {
+    "task_id": "promo-01",
+    "checks": {
+      "repo_ok": true,
+      "rejects_start": true,
+      "solution_applies": true,
+      "solvable": true,
+      "stable": true,
+      "all_mutants_killed": true
+    },
+    "mutants": [
+      {
+        "name": "no_normalize",
+        "description": "Codes are not upper-cased or trimmed before matching",
+        "killed": true,
+        "summary": "1 failed, 17 passed in 0.28s"
+      },
+      {
+        "name": "threshold_strict",
+        "description": "Minimum spend uses > instead of >=",
+        "killed": true,
+        "summary": "1 failed, 17 passed in 0.20s"
+      },
+      {
+        "name": "apply_time_check",
+        "description": "Minimum spend checked only when the code is applied, never re-checked",
+        "killed": true,
+        "summary": "3 failed, 15 passed in 0.24s"
+      },
+      {
+        "name": "ignore_cap",
+        "description": "Maximum discount cap not applied",
+        "killed": true,
+        "summary": "2 failed, 16 passed in 0.25s"
+      },
+      {
+        "name": "single_use_not_enforced",
+        "description": "Same customer can reuse the code",
+        "killed": true,
+        "summary": "1 failed, 17 passed in 0.24s"
+      },
+      {
+        "name": "burn_without_discount",
+        "description": "Code marked as used even when it gave no discount",
+        "killed": true,
+        "summary": "1 failed, 17 passed in 0.37s"
+      }
+    ],
+    "start_summary": "11 failed, 7 passed in 0.24s",
+    "feature_tests_failing_at_start": 11,
+    "solved_summary": "18 passed in 0.06s",
+    "tests_total": 18,
+    "mutation_score": "6/6",
+    "valid": true,
+    "family": "promo",
+    "title": "Add the THANKYOU promo code to the cart",
+    "skipped_mutants": [
+      "round_half_up"
+    ],
+    "difficulty": "medium"
+  }
+}

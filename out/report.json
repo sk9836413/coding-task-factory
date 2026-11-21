@@ -1,0 +1,519 @@
+{
+  "repo": "E:\\task-factory\\sample_repo",
+  "repo_version": "sha256:74a426e496f4cc9c",
+  "seed": 7,
+  "requested": 9,
+  "generated": 9,
+  "valid": 9,
+  "seconds": 96.5,
+  "tasks": [
+    {
+      "task_id": "promo-01",
+      "checks": {
+        "repo_ok": true,
+        "rejects_start": true,
+        "solution_applies": true,
+        "solvable": true,
+        "stable": true,
+        "all_mutants_killed": true
+      },
+      "mutants": [
+        {
+          "name": "no_normalize",
+          "description": "Codes are not upper-cased or trimmed before matching",
+          "killed": true,
+          "summary": "1 failed, 17 passed in 0.28s"
+        },
+        {
+          "name": "threshold_strict",
+          "description": "Minimum spend uses > instead of >=",
+          "killed": true,
+          "summary": "1 failed, 17 passed in 0.20s"
+        },
+        {
+          "name": "apply_time_check",
+          "description": "Minimum spend checked only when the code is applied, never re-checked",
+          "killed": true,
+          "summary": "3 failed, 15 passed in 0.24s"
+        },
+        {
+          "name": "ignore_cap",
+          "description": "Maximum discount cap not applied",
+          "killed": true,
+          "summary": "2 failed, 16 passed in 0.25s"
+        },
+        {
+          "name": "single_use_not_enforced",
+          "description": "Same customer can reuse the code",
+          "killed": true,
+          "summary": "1 failed, 17 passed in 0.24s"
+        },
+        {
+          "name": "burn_without_discount",
+          "description": "Code marked as used even when it gave no discount",
+          "killed": true,
+          "summary": "1 failed, 17 passed in 0.37s"
+        }
+      ],
+      "start_summary": "11 failed, 7 passed in 0.24s",
+      "feature_tests_failing_at_start": 11,
+      "solved_summary": "18 passed in 0.06s",
+      "tests_total": 18,
+      "mutation_score": "6/6",
+      "valid": true,
+      "family": "promo",
+      "title": "Add the THANKYOU promo code to the cart",
+      "skipped_mutants": [
+        "round_half_up"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "task_id": "shipping-01",
+      "checks": {
+        "repo_ok": true,
+        "rejects_start": true,
+        "solution_applies": true,
+        "solvable": true,
+        "stable": true,
+        "all_mutants_killed": true
+      },
+      "mutants": [
+        {
+          "name": "empty_charged",
+          "description": "Empty carts are charged shipping",
+          "killed": true,
+          "summary": "2 failed, 11 passed in 0.20s"
+        },
+        {
+          "name": "weight_floor",
+          "description": "Weight charge counts whole kilograms instead of started kilograms",
+          "killed": true,
+          "summary": "1 failed, 12 passed in 0.19s"
+        },
+        {
+          "name": "weight_includes_first_kg",
+          "description": "The first kilogram is charged as extra weight",
+          "killed": true,
+          "summary": "4 failed, 9 passed in 0.22s"
+        },
+        {
+          "name": "free_strict",
+          "description": "Free-shipping threshold uses > instead of >=",
+          "killed": true,
+          "summary": "1 failed, 12 passed in 0.19s"
+        }
+      ],
+      "start_summary": "7 failed, 6 passed in 0.23s",
+      "feature_tests_failing_at_start": 7,
+      "solved_summary": "13 passed in 0.06s",
+      "tests_total": 13,
+      "mutation_score": "4/4",
+      "valid": true,
+      "family": "shipping",
+      "title": "Add shipping charges to the cart",
+      "skipped_mutants": [],
+      "difficulty": "medium"
+    },
+    {
+      "task_id": "deals-01",
+      "checks": {
+        "repo_ok": true,
+        "rejects_start": true,
+        "solution_applies": true,
+        "solvable": true,
+        "stable": true,
+        "all_mutants_killed": true
+      },
+      "mutants": [
+        {
+          "name": "group_off_by_one",
+          "description": "Counts groups of X instead of X+1 for buy X get 1 free",
+          "killed": true,
+          "summary": "3 failed, 8 passed in 0.18s"
+        },
+        {
+          "name": "ignore_max",
+          "description": "Free-item cap per order not applied",
+          "killed": true,
+          "summary": "1 failed, 10 passed in 0.20s"
+        }
+      ],
+      "start_summary": "4 failed, 7 passed in 0.19s",
+      "feature_tests_failing_at_start": 4,
+      "solved_summary": "11 passed in 0.04s",
+      "tests_total": 11,
+      "mutation_score": "2/2",
+      "valid": true,
+      "family": "deals",
+      "title": "Add a buy 1 get 1 free deal on RICE-5K",
+      "skipped_mutants": [],
+      "difficulty": "medium"
+    },
+    {
+      "task_id": "promo-02",
+      "checks": {
+        "repo_ok": true,
+        "rejects_start": true,
+        "solution_applies": true,
+        "solvable": true,
+        "stable": true,
+        "all_mutants_killed": true
+      },
+      "mutants": [
+        {
+          "name": "no_normalize",
+          "description": "Codes are not upper-cased or trimmed before matching",
+          "killed": true,
+          "summary": "1 failed, 13 passed in 0.19s"
+        },
+        {
+          "name": "ignore_category",
+          "description": "Discount applied to the whole cart instead of the eligible category",
+          "killed": true,
+          "summary": "5 failed, 9 passed in 0.27s"
+        }
+      ],
+      "start_summary": "7 failed, 7 passed in 0.22s",
+      "feature_tests_failing_at_start": 7,
+      "solved_summary": "14 passed in 0.05s",
+      "tests_total": 14,
+      "mutation_score": "2/2",
+      "valid": true,
+      "family": "promo",
+      "title": "Add the WEEKEND promo code to the cart",
+      "skipped_mutants": [
+        "round_half_up"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "task_id": "shipping-02",
+      "checks": {
+        "repo_ok": true,
+        "rejects_start": true,
+        "solution_applies": true,
+        "solvable": true,
+        "stable": true,
+        "all_mutants_killed": true
+      },
+      "mutants": [
+        {
+          "name": "empty_charged",
+          "description": "Empty carts are charged shipping",
+          "killed": true,
+          "summary": "2 failed, 9 passed in 0.20s"
+        },
+        {
+          "name": "free_strict",
+          "description": "Free-shipping threshold uses > instead of >=",
+          "killed": true,
+          "summary": "1 failed, 10 passed in 0.18s"
+        }
+      ],
+      "start_summary": "5 failed, 6 passed in 0.19s",
+      "feature_tests_failing_at_start": 5,
+      "solved_summary": "11 passed in 0.04s",
+      "tests_total": 11,
+      "mutation_score": "2/2",
+      "valid": true,
+      "family": "shipping",
+      "title": "Add shipping charges to the cart",
+      "skipped_mutants": [],
+      "difficulty": "easy"
+    },
+    {
+      "task_id": "deals-02",
+      "checks": {
+        "repo_ok": true,
+        "rejects_start": true,
+        "solution_applies": true,
+        "solvable": true,
+        "stable": true,
+        "all_mutants_killed": true
+      },
+      "mutants": [
+        {
+          "name": "group_off_by_one",
+          "description": "Counts groups of X instead of X+1 for buy X get 1 free",
+          "killed": true,
+          "summary": "2 failed, 9 passed in 0.18s"
+        },
+        {
+          "name": "ignore_max",
+          "description": "Free-item cap per order not applied",
+          "killed": true,
+          "summary": "1 failed, 10 passed in 0.17s"
+        }
+      ],
+      "start_summary": "4 failed, 7 passed in 0.19s",
+      "feature_tests_failing_at_start": 4,
+      "solved_summary": "11 passed in 0.04s",
+      "tests_total": 11,
+      "mutation_score": "2/2",
+      "valid": true,
+      "family": "deals",
+      "title": "Add a buy 3 get 1 free deal on OIL-1L",
+      "skipped_mutants": [],
+      "difficulty": "medium"
+    },
+    {
+      "task_id": "promo-03",
+      "checks": {
+        "repo_ok": true,
+        "rejects_start": true,
+        "solution_applies": true,
+        "solvable": true,
+        "stable": true,
+        "all_mutants_killed": true
+      },
+      "mutants": [
+        {
+          "name": "no_normalize",
+          "description": "Codes are not upper-cased or trimmed before matching",
+          "killed": true,
+          "summary": "1 failed, 15 passed in 0.21s"
+        },
+        {
+          "name": "threshold_strict",
+          "description": "Minimum spend uses > instead of >=",
+          "killed": true,
+          "summary": "1 failed, 15 passed in 0.22s"
+        },
+        {
+          "name": "apply_time_check",
+          "description": "Minimum spend checked only when the code is applied, never re-checked",
+          "killed": true,
+          "summary": "2 failed, 14 passed in 0.25s"
+        },
+        {
+          "name": "ignore_cap",
+          "description": "Maximum discount cap not applied",
+          "killed": true,
+          "summary": "1 failed, 15 passed in 0.23s"
+        }
+      ],
+      "start_summary": "9 failed, 7 passed in 0.34s",
+      "feature_tests_failing_at_start": 9,
+      "solved_summary": "16 passed in 0.06s",
+      "tests_total": 16,
+      "mutation_score": "4/4",
+      "valid": true,
+      "family": "promo",
+      "title": "Add the FESTIVE promo code to the cart",
+      "skipped_mutants": [
+        "round_half_up"
+      ],
+      "difficulty": "medium"
+    },
+    {
+      "task_id": "shipping-03",
+      "checks": {
+        "repo_ok": true,
+        "rejects_start": true,
+        "solution_applies": true,
+        "solvable": true,
+        "stable": true,
+        "all_mutants_killed": true
+      },
+      "mutants": [
+        {
+          "name": "empty_charged",
+          "description": "Empty carts are charged shipping",
+          "killed": true,
+          "summary": "2 failed, 11 passed in 0.21s"
+        },
+        {
+          "name": "free_strict",
+          "description": "Free-shipping threshold uses > instead of >=",
+          "killed": true,
+          "summary": "1 failed, 12 passed in 0.20s"
+        },
+        {
+          "name": "express_ignored",
+          "description": "Express surcharge never added",
+          "killed": true,
+          "summary": "2 failed, 11 passed in 0.19s"
+        },
+        {
+          "name": "express_free_wrong",
+          "description": "Express orders get (or lose) free shipping against the rules",
+          "killed": true,
+          "summary": "1 failed, 12 passed in 0.19s"
+        }
+      ],
+      "start_summary": "7 failed, 6 passed in 0.28s",
+      "feature_tests_failing_at_start": 7,
+      "solved_summary": "13 passed in 0.13s",
+      "tests_total": 13,
+      "mutation_score": "4/4",
+      "valid": true,
+      "family": "shipping",
+      "title": "Add shipping charges to the cart",
+      "skipped_mutants": [],
+      "difficulty": "medium"
+    },
+    {
+      "task_id": "deals-03",
+      "checks": {
+        "repo_ok": true,
+        "rejects_start": true,
+        "solution_applies": true,
+        "solvable": true,
+        "stable": true,
+        "all_mutants_killed": true
+      },
+      "mutants": [
+        {
+          "name": "group_off_by_one",
+          "description": "Counts groups of X instead of X+1 for buy X get 1 free",
+          "killed": true,
+          "summary": "1 failed, 10 passed in 0.23s"
+        },
+        {
+          "name": "ignore_max",
+          "description": "Free-item cap per order not applied",
+          "killed": true,
+          "summary": "1 failed, 10 passed in 0.18s"
+        }
+      ],
+      "start_summary": "4 failed, 7 passed in 0.19s",
+      "feature_tests_failing_at_start": 4,
+      "solved_summary": "11 passed in 0.04s",
+      "tests_total": 11,
+      "mutation_score": "2/2",
+      "valid": true,
+      "family": "deals",
+      "title": "Add a buy 2 get 1 free deal on SHIRT-M",
+      "skipped_mutants": [],
+      "difficulty": "medium"
+    }
+  ],
+  "distinctness": [
+    {
+      "a": "promo-01",
+      "b": "promo-02",
+      "a_solution_fails_b": true,
+      "b_solution_fails_a": true
+    },
+    {
+      "a": "promo-01",
+      "b": "promo-03",
+      "a_solution_fails_b": true,
+      "b_solution_fails_a": true
+    },
+    {
+      "a": "shipping-01",
+      "b": "shipping-02",
+      "a_solution_fails_b": true,
+      "b_solution_fails_a": true
+    },
+    {
+      "a": "shipping-01",
+      "b": "shipping-03",
+      "a_solution_fails_b": true,
+      "b_solution_fails_a": true
+    },
+    {
+      "a": "deals-01",
+      "b": "deals-02",
+      "a_solution_fails_b": true,
+      "b_solution_fails_a": true
+    },
+    {
+      "a": "deals-01",
+      "b": "deals-03",
+      "a_solution_fails_b": true,
+      "b_solution_fails_a": true
+    },
+    {
+      "a": "promo-02",
+      "b": "promo-03",
+      "a_solution_fails_b": true,
+      "b_solution_fails_a": true
+    },
+    {
+      "a": "shipping-02",
+      "b": "shipping-03",
+      "a_solution_fails_b": true,
+      "b_solution_fails_a": true
+    },
+    {
+      "a": "deals-02",
+      "b": "deals-03",
+      "a_solution_fails_b": true,
+      "b_solution_fails_a": true
+    }
+  ],
+  "params": {
+    "promo-01": {
+      "code": "THANKYOU",
+      "kind": "percent",
+      "pct": 20,
+      "cap": 30000,
+      "category": null,
+      "threshold_on": "cart",
+      "min_subtotal": 65400,
+      "single_use": true
+    },
+    "shipping-01": {
+      "base_fee": 4000,
+      "per_kg": 2000,
+      "express": null,
+      "free_above": 85200,
+      "express_free": false
+    },
+    "deals-01": {
+      "kind": "bxgy",
+      "sku": "RICE-5K",
+      "x": 1,
+      "max_free": 2
+    },
+    "promo-02": {
+      "code": "WEEKEND",
+      "kind": "percent",
+      "pct": 5,
+      "cap": null,
+      "category": "stationery",
+      "threshold_on": "cart",
+      "min_subtotal": null,
+      "single_use": false
+    },
+    "shipping-02": {
+      "base_fee": 4900,
+      "per_kg": null,
+      "express": null,
+      "free_above": 108200,
+      "express_free": false
+    },
+    "deals-02": {
+      "kind": "bxgy",
+      "sku": "OIL-1L",
+      "x": 3,
+      "max_free": 2
+    },
+    "promo-03": {
+      "code": "FESTIVE",
+      "kind": "percent",
+      "pct": 10,
+      "cap": 15000,
+      "category": null,
+      "threshold_on": "cart",
+      "min_subtotal": 63000,
+      "single_use": false
+    },
+    "shipping-03": {
+      "base_fee": 9900,
+      "per_kg": null,
+      "express": 5000,
+      "free_above": 85200,
+      "express_free": false
+    },
+    "deals-03": {
+      "kind": "bxgy",
+      "sku": "SHIRT-M",
+      "x": 2,
+      "max_free": 1
+    }
+  }
+}

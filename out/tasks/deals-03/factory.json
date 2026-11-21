@@ -1,0 +1,76 @@
+{
+  "task_id": "deals-03",
+  "title": "Add a buy 2 get 1 free deal on SHIRT-M",
+  "family": "deals",
+  "params": {
+    "kind": "bxgy",
+    "sku": "SHIRT-M",
+    "x": 2,
+    "max_free": 1
+  },
+  "signature": [
+    [
+      "kind",
+      "bxgy"
+    ],
+    [
+      "max_free",
+      1
+    ],
+    [
+      "sku",
+      "SHIRT-M"
+    ],
+    [
+      "x",
+      2
+    ]
+  ],
+  "repo_version": "sha256:74a426e496f4cc9c",
+  "mutants": [
+    {
+      "name": "group_off_by_one",
+      "description": "Counts groups of X instead of X+1 for buy X get 1 free"
+    },
+    {
+      "name": "ignore_max",
+      "description": "Free-item cap per order not applied"
+    }
+  ],
+  "skipped_mutants": [],
+  "validation": {
+    "task_id": "deals-03",
+    "checks": {
+      "repo_ok": true,
+      "rejects_start": true,
+      "solution_applies": true,
+      "solvable": true,
+      "stable": true,
+      "all_mutants_killed": true
+    },
+    "mutants": [
+      {
+        "name": "group_off_by_one",
+        "description": "Counts groups of X instead of X+1 for buy X get 1 free",
+        "killed": true,
+        "summary": "1 failed, 10 passed in 0.23s"
+      },
+      {
+        "name": "ignore_max",
+        "description": "Free-item cap per order not applied",
+        "killed": true,
+        "summary": "1 failed, 10 passed in 0.18s"
+      }
+    ],
+    "start_summary": "4 failed, 7 passed in 0.19s",
+    "feature_tests_failing_at_start": 4,
+    "solved_summary": "11 passed in 0.04s",
+    "tests_total": 11,
+    "mutation_score": "2/2",
+    "valid": true,
+    "family": "deals",
+    "title": "Add a buy 2 get 1 free deal on SHIRT-M",
+    "skipped_mutants": [],
+    "difficulty": "medium"
+  }
+}
