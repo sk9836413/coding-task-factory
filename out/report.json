@@ -1,519 +1,561 @@
 {
-  "repo": "sample_repo",
-  "repo_version": "sha256:74a426e496f4cc9c",
+  "repository": "pallets/click",
+  "base_commit": "cf19179e8e2fd54c601378cec9e0d21bb12b6fb1",
+  "base_tag": "8.5.1",
   "seed": 7,
-  "requested": 9,
-  "generated": 9,
-  "valid": 9,
-  "seconds": 124.1,
+  "requested": 5,
+  "generated": 5,
+  "valid": 5,
+  "pass_to_pass": 2356,
+  "seconds": 472.5,
   "tasks": [
     {
-      "task_id": "promo-01",
+      "task_id": "bytesize-01",
       "checks": {
-        "repo_ok": true,
-        "rejects_start": true,
-        "solution_applies": true,
-        "solvable": true,
-        "stable": true,
-        "all_mutants_killed": true
+        "nop_reward_0": true,
+        "nop_regression_intact": true,
+        "oracle_reward_1": true,
+        "oracle_stable": true,
+        "all_mutants_killed": true,
+        "harbor_lint_clean": true
+      },
+      "nop": {
+        "reward": 0.0,
+        "fail_to_pass": {
+          "total": 9,
+          "passed": 0,
+          "failing": [
+            "tests/test_task_feature.py::test_every_unit_is_converted",
+            "tests/test_task_feature.py::test_bare_number_uses_default_unit",
+            "tests/test_task_feature.py::test_optional_space_between_number_and_unit",
+            "tests/test_task_feature.py::test_unit_case_rule",
+            "tests/test_task_feature.py::test_fractional_values",
+            "tests/test_task_feature.py::test_invalid_values_are_rejected",
+            "tests/test_task_feature.py::test_units_of_the_other_system_are_rejected",
+            "tests/test_task_feature.py::test_maximum_is_inclusive",
+            "tests/test_task_feature.py::test_python_values_and_api"
+          ]
+        },
+        "pass_to_pass": {
+          "total": 2356,
+          "broken": [],
+          "broken_count": 0
+        }
+      },
+      "oracle": {
+        "reward": 1.0,
+        "fail_to_pass": {
+          "total": 9,
+          "passed": 9,
+          "failing": []
+        },
+        "pass_to_pass": {
+          "total": 2356,
+          "broken": [],
+          "broken_count": 0
+        }
       },
       "mutants": [
         {
-          "name": "no_normalize",
-          "description": "Codes are not upper-cased or trimmed before matching",
+          "name": "binary_uses_1000",
           "killed": true,
-          "summary": "1 failed, 17 passed in 0.70s"
+          "failed_tests": 5,
+          "tests": 9
         },
         {
-          "name": "threshold_strict",
-          "description": "Minimum spend uses > instead of >=",
+          "name": "case_rule_flipped",
           "killed": true,
-          "summary": "1 failed, 17 passed in 0.37s"
+          "failed_tests": 1,
+          "tests": 9
         },
         {
-          "name": "apply_time_check",
-          "description": "Minimum spend checked only when the code is applied, never re-checked",
+          "name": "cross_system_accepted",
           "killed": true,
-          "summary": "3 failed, 15 passed in 0.42s"
+          "failed_tests": 1,
+          "tests": 9
         },
         {
-          "name": "ignore_cap",
-          "description": "Maximum discount cap not applied",
+          "name": "default_unit_ignored",
           "killed": true,
-          "summary": "2 failed, 16 passed in 0.40s"
+          "failed_tests": 1,
+          "tests": 9
         },
         {
-          "name": "single_use_not_enforced",
-          "description": "Same customer can reuse the code",
+          "name": "fraction_rule_flipped",
           "killed": true,
-          "summary": "1 failed, 17 passed in 0.30s"
+          "failed_tests": 1,
+          "tests": 9
         },
         {
-          "name": "burn_without_discount",
-          "description": "Code marked as used even when it gave no discount",
+          "name": "max_inclusive_wrong",
           "killed": true,
-          "summary": "1 failed, 17 passed in 0.23s"
+          "failed_tests": 1,
+          "tests": 9
+        },
+        {
+          "name": "rounds_instead_of_floor",
+          "killed": true,
+          "failed_tests": 1,
+          "tests": 9
+        },
+        {
+          "name": "space_not_allowed",
+          "killed": true,
+          "failed_tests": 1,
+          "tests": 9
         }
       ],
-      "start_summary": "11 failed, 7 passed in 0.28s",
-      "feature_tests_failing_at_start": 11,
-      "solved_summary": "18 passed in 0.12s",
-      "tests_total": 18,
+      "mutation_score": "8/8",
+      "harbor_lint": {
+        "ok": true,
+        "findings": []
+      },
+      "valid": true,
+      "family": "bytesize",
+      "title": "Add a ByteSize parameter type",
+      "difficulty": "medium",
+      "params": {
+        "system": "binary",
+        "case_sensitive": false,
+        "allow_fraction": true,
+        "default_unit": "KiB",
+        "max_bytes": 2147483648
+      }
+    },
+    {
+      "task_id": "duration-01",
+      "checks": {
+        "nop_reward_0": true,
+        "nop_regression_intact": true,
+        "oracle_reward_1": true,
+        "oracle_stable": true,
+        "all_mutants_killed": true,
+        "harbor_lint_clean": true
+      },
+      "nop": {
+        "reward": 0.0,
+        "fail_to_pass": {
+          "total": 9,
+          "passed": 0,
+          "failing": [
+            "tests/test_task_feature.py::test_single_units",
+            "tests/test_task_feature.py::test_bare_number_uses_default_unit",
+            "tests/test_task_feature.py::test_days_unit",
+            "tests/test_task_feature.py::test_compound_values",
+            "tests/test_task_feature.py::test_units_must_go_from_largest_to_smallest",
+            "tests/test_task_feature.py::test_zero_duration",
+            "tests/test_task_feature.py::test_invalid_values_are_rejected",
+            "tests/test_task_feature.py::test_maximum_is_inclusive",
+            "tests/test_task_feature.py::test_python_values_and_api"
+          ]
+        },
+        "pass_to_pass": {
+          "total": 2356,
+          "broken": [],
+          "broken_count": 0
+        }
+      },
+      "oracle": {
+        "reward": 1.0,
+        "fail_to_pass": {
+          "total": 9,
+          "passed": 9,
+          "failing": []
+        },
+        "pass_to_pass": {
+          "total": 2356,
+          "broken": [],
+          "broken_count": 0
+        }
+      },
+      "mutants": [
+        {
+          "name": "bare_unit_wrong",
+          "killed": true,
+          "failed_tests": 1,
+          "tests": 9
+        },
+        {
+          "name": "compound_rule_flipped",
+          "killed": true,
+          "failed_tests": 1,
+          "tests": 9
+        },
+        {
+          "name": "days_rule_flipped",
+          "killed": true,
+          "failed_tests": 2,
+          "tests": 9
+        },
+        {
+          "name": "max_inclusive_wrong",
+          "killed": true,
+          "failed_tests": 1,
+          "tests": 9
+        },
+        {
+          "name": "minutes_as_seconds",
+          "killed": true,
+          "failed_tests": 2,
+          "tests": 9
+        },
+        {
+          "name": "order_not_checked",
+          "killed": true,
+          "failed_tests": 1,
+          "tests": 9
+        },
+        {
+          "name": "wrong_output_type",
+          "killed": true,
+          "failed_tests": 5,
+          "tests": 9
+        },
+        {
+          "name": "zero_rule_flipped",
+          "killed": true,
+          "failed_tests": 1,
+          "tests": 9
+        }
+      ],
+      "mutation_score": "8/8",
+      "harbor_lint": {
+        "ok": true,
+        "findings": []
+      },
+      "valid": true,
+      "family": "duration",
+      "title": "Add a Duration parameter type",
+      "difficulty": "hard",
+      "params": {
+        "days": false,
+        "compound": true,
+        "bare_unit": "s",
+        "output": "timedelta",
+        "positive_only": true,
+        "max_seconds": 3600
+      }
+    },
+    {
+      "task_id": "aliases-01",
+      "checks": {
+        "nop_reward_0": true,
+        "nop_regression_intact": true,
+        "oracle_reward_1": true,
+        "oracle_stable": true,
+        "all_mutants_killed": true,
+        "harbor_lint_clean": true
+      },
+      "nop": {
+        "reward": 0.0,
+        "fail_to_pass": {
+          "total": 8,
+          "passed": 0,
+          "failing": [
+            "tests/test_task_feature.py::test_names_and_aliases_invoke_the_command",
+            "tests/test_task_feature.py::test_unknown_names_are_rejected",
+            "tests/test_task_feature.py::test_case_rule",
+            "tests/test_task_feature.py::test_unique_prefixes",
+            "tests/test_task_feature.py::test_ambiguous_prefix",
+            "tests/test_task_feature.py::test_prefix_with_case",
+            "tests/test_task_feature.py::test_help_lists_commands",
+            "tests/test_task_feature.py::test_aliases_api"
+          ]
+        },
+        "pass_to_pass": {
+          "total": 2356,
+          "broken": [],
+          "broken_count": 0
+        }
+      },
+      "oracle": {
+        "reward": 1.0,
+        "fail_to_pass": {
+          "total": 8,
+          "passed": 8,
+          "failing": []
+        },
+        "pass_to_pass": {
+          "total": 2356,
+          "broken": [],
+          "broken_count": 0
+        }
+      },
+      "mutants": [
+        {
+          "name": "alias_name_kept",
+          "killed": true,
+          "failed_tests": 4,
+          "tests": 8
+        },
+        {
+          "name": "alias_not_resolved",
+          "killed": true,
+          "failed_tests": 2,
+          "tests": 8
+        },
+        {
+          "name": "ambiguous_prefix_picks_first",
+          "killed": true,
+          "failed_tests": 1,
+          "tests": 8
+        },
+        {
+          "name": "case_rule_flipped",
+          "killed": true,
+          "failed_tests": 2,
+          "tests": 8
+        },
+        {
+          "name": "help_rule_flipped",
+          "killed": true,
+          "failed_tests": 1,
+          "tests": 8
+        },
+        {
+          "name": "prefix_rule_flipped",
+          "killed": true,
+          "failed_tests": 3,
+          "tests": 8
+        }
+      ],
       "mutation_score": "6/6",
+      "harbor_lint": {
+        "ok": true,
+        "findings": []
+      },
       "valid": true,
-      "family": "promo",
-      "title": "Add the THANKYOU promo code to the cart",
-      "skipped_mutants": [
-        "round_half_up"
-      ],
-      "difficulty": "medium"
+      "family": "aliases",
+      "title": "Add command aliases to Click groups",
+      "difficulty": "hard",
+      "params": {
+        "prefix_matching": true,
+        "case_insensitive": true,
+        "show_in_help": false
+      }
     },
     {
-      "task_id": "shipping-01",
+      "task_id": "bytesize-02",
       "checks": {
-        "repo_ok": true,
-        "rejects_start": true,
-        "solution_applies": true,
-        "solvable": true,
-        "stable": true,
-        "all_mutants_killed": true
+        "nop_reward_0": true,
+        "nop_regression_intact": true,
+        "oracle_reward_1": true,
+        "oracle_stable": true,
+        "all_mutants_killed": true,
+        "harbor_lint_clean": true
+      },
+      "nop": {
+        "reward": 0.0,
+        "fail_to_pass": {
+          "total": 9,
+          "passed": 0,
+          "failing": [
+            "tests/test_task_feature.py::test_every_unit_is_converted",
+            "tests/test_task_feature.py::test_bare_number_uses_default_unit",
+            "tests/test_task_feature.py::test_optional_space_between_number_and_unit",
+            "tests/test_task_feature.py::test_unit_case_rule",
+            "tests/test_task_feature.py::test_fractional_values",
+            "tests/test_task_feature.py::test_invalid_values_are_rejected",
+            "tests/test_task_feature.py::test_units_of_the_other_system_are_rejected",
+            "tests/test_task_feature.py::test_maximum_is_inclusive",
+            "tests/test_task_feature.py::test_python_values_and_api"
+          ]
+        },
+        "pass_to_pass": {
+          "total": 2356,
+          "broken": [],
+          "broken_count": 0
+        }
+      },
+      "oracle": {
+        "reward": 1.0,
+        "fail_to_pass": {
+          "total": 9,
+          "passed": 9,
+          "failing": []
+        },
+        "pass_to_pass": {
+          "total": 2356,
+          "broken": [],
+          "broken_count": 0
+        }
       },
       "mutants": [
         {
-          "name": "empty_charged",
-          "description": "Empty carts are charged shipping",
+          "name": "case_rule_flipped",
           "killed": true,
-          "summary": "2 failed, 11 passed in 0.22s"
+          "failed_tests": 1,
+          "tests": 9
         },
         {
-          "name": "weight_floor",
-          "description": "Weight charge counts whole kilograms instead of started kilograms",
+          "name": "cross_system_accepted",
           "killed": true,
-          "summary": "1 failed, 12 passed in 0.23s"
+          "failed_tests": 1,
+          "tests": 9
         },
         {
-          "name": "weight_includes_first_kg",
-          "description": "The first kilogram is charged as extra weight",
+          "name": "decimal_uses_1024",
           "killed": true,
-          "summary": "4 failed, 9 passed in 0.23s"
+          "failed_tests": 3,
+          "tests": 9
         },
         {
-          "name": "free_strict",
-          "description": "Free-shipping threshold uses > instead of >=",
+          "name": "fraction_rule_flipped",
           "killed": true,
-          "summary": "1 failed, 12 passed in 0.22s"
+          "failed_tests": 1,
+          "tests": 9
+        },
+        {
+          "name": "max_inclusive_wrong",
+          "killed": true,
+          "failed_tests": 1,
+          "tests": 9
+        },
+        {
+          "name": "space_not_allowed",
+          "killed": true,
+          "failed_tests": 1,
+          "tests": 9
         }
       ],
-      "start_summary": "7 failed, 6 passed in 0.22s",
-      "feature_tests_failing_at_start": 7,
-      "solved_summary": "13 passed in 0.06s",
-      "tests_total": 13,
-      "mutation_score": "4/4",
+      "mutation_score": "6/6",
+      "harbor_lint": {
+        "ok": true,
+        "findings": []
+      },
       "valid": true,
-      "family": "shipping",
-      "title": "Add shipping charges to the cart",
-      "skipped_mutants": [],
-      "difficulty": "medium"
+      "family": "bytesize",
+      "title": "Add a ByteSize parameter type",
+      "difficulty": "medium",
+      "params": {
+        "system": "decimal",
+        "case_sensitive": false,
+        "allow_fraction": false,
+        "default_unit": "B",
+        "max_bytes": 50000000000
+      }
     },
     {
-      "task_id": "deals-01",
+      "task_id": "duration-02",
       "checks": {
-        "repo_ok": true,
-        "rejects_start": true,
-        "solution_applies": true,
-        "solvable": true,
-        "stable": true,
-        "all_mutants_killed": true
+        "nop_reward_0": true,
+        "nop_regression_intact": true,
+        "oracle_reward_1": true,
+        "oracle_stable": true,
+        "all_mutants_killed": true,
+        "harbor_lint_clean": true
+      },
+      "nop": {
+        "reward": 0.0,
+        "fail_to_pass": {
+          "total": 9,
+          "passed": 0,
+          "failing": [
+            "tests/test_task_feature.py::test_single_units",
+            "tests/test_task_feature.py::test_bare_number_uses_default_unit",
+            "tests/test_task_feature.py::test_days_unit",
+            "tests/test_task_feature.py::test_compound_values",
+            "tests/test_task_feature.py::test_units_must_go_from_largest_to_smallest",
+            "tests/test_task_feature.py::test_zero_duration",
+            "tests/test_task_feature.py::test_invalid_values_are_rejected",
+            "tests/test_task_feature.py::test_maximum_is_inclusive",
+            "tests/test_task_feature.py::test_python_values_and_api"
+          ]
+        },
+        "pass_to_pass": {
+          "total": 2356,
+          "broken": [],
+          "broken_count": 0
+        }
+      },
+      "oracle": {
+        "reward": 1.0,
+        "fail_to_pass": {
+          "total": 9,
+          "passed": 9,
+          "failing": []
+        },
+        "pass_to_pass": {
+          "total": 2356,
+          "broken": [],
+          "broken_count": 0
+        }
       },
       "mutants": [
         {
-          "name": "group_off_by_one",
-          "description": "Counts groups of X instead of X+1 for buy X get 1 free",
+          "name": "bare_unit_wrong",
           "killed": true,
-          "summary": "3 failed, 8 passed in 0.21s"
+          "failed_tests": 1,
+          "tests": 9
         },
         {
-          "name": "ignore_max",
-          "description": "Free-item cap per order not applied",
+          "name": "compound_rule_flipped",
           "killed": true,
-          "summary": "1 failed, 10 passed in 0.25s"
+          "failed_tests": 1,
+          "tests": 9
+        },
+        {
+          "name": "days_rule_flipped",
+          "killed": true,
+          "failed_tests": 1,
+          "tests": 9
+        },
+        {
+          "name": "max_inclusive_wrong",
+          "killed": true,
+          "failed_tests": 1,
+          "tests": 9
+        },
+        {
+          "name": "minutes_as_seconds",
+          "killed": true,
+          "failed_tests": 1,
+          "tests": 9
+        },
+        {
+          "name": "wrong_output_type",
+          "killed": true,
+          "failed_tests": 4,
+          "tests": 9
+        },
+        {
+          "name": "zero_rule_flipped",
+          "killed": true,
+          "failed_tests": 1,
+          "tests": 9
         }
       ],
-      "start_summary": "4 failed, 7 passed in 0.26s",
-      "feature_tests_failing_at_start": 4,
-      "solved_summary": "11 passed in 0.05s",
-      "tests_total": 11,
-      "mutation_score": "2/2",
-      "valid": true,
-      "family": "deals",
-      "title": "Add a buy 1 get 1 free deal on RICE-5K",
-      "skipped_mutants": [],
-      "difficulty": "medium"
-    },
-    {
-      "task_id": "promo-02",
-      "checks": {
-        "repo_ok": true,
-        "rejects_start": true,
-        "solution_applies": true,
-        "solvable": true,
-        "stable": true,
-        "all_mutants_killed": true
+      "mutation_score": "7/7",
+      "harbor_lint": {
+        "ok": true,
+        "findings": []
       },
-      "mutants": [
-        {
-          "name": "no_normalize",
-          "description": "Codes are not upper-cased or trimmed before matching",
-          "killed": true,
-          "summary": "1 failed, 13 passed in 0.24s"
-        },
-        {
-          "name": "ignore_category",
-          "description": "Discount applied to the whole cart instead of the eligible category",
-          "killed": true,
-          "summary": "5 failed, 9 passed in 0.21s"
-        }
-      ],
-      "start_summary": "7 failed, 7 passed in 0.39s",
-      "feature_tests_failing_at_start": 7,
-      "solved_summary": "14 passed in 0.05s",
-      "tests_total": 14,
-      "mutation_score": "2/2",
       "valid": true,
-      "family": "promo",
-      "title": "Add the WEEKEND promo code to the cart",
-      "skipped_mutants": [
-        "round_half_up"
-      ],
-      "difficulty": "medium"
-    },
-    {
-      "task_id": "shipping-02",
-      "checks": {
-        "repo_ok": true,
-        "rejects_start": true,
-        "solution_applies": true,
-        "solvable": true,
-        "stable": true,
-        "all_mutants_killed": true
-      },
-      "mutants": [
-        {
-          "name": "empty_charged",
-          "description": "Empty carts are charged shipping",
-          "killed": true,
-          "summary": "2 failed, 9 passed in 0.23s"
-        },
-        {
-          "name": "free_strict",
-          "description": "Free-shipping threshold uses > instead of >=",
-          "killed": true,
-          "summary": "1 failed, 10 passed in 0.21s"
-        }
-      ],
-      "start_summary": "5 failed, 6 passed in 0.22s",
-      "feature_tests_failing_at_start": 5,
-      "solved_summary": "11 passed in 0.05s",
-      "tests_total": 11,
-      "mutation_score": "2/2",
-      "valid": true,
-      "family": "shipping",
-      "title": "Add shipping charges to the cart",
-      "skipped_mutants": [],
-      "difficulty": "easy"
-    },
-    {
-      "task_id": "deals-02",
-      "checks": {
-        "repo_ok": true,
-        "rejects_start": true,
-        "solution_applies": true,
-        "solvable": true,
-        "stable": true,
-        "all_mutants_killed": true
-      },
-      "mutants": [
-        {
-          "name": "group_off_by_one",
-          "description": "Counts groups of X instead of X+1 for buy X get 1 free",
-          "killed": true,
-          "summary": "2 failed, 9 passed in 0.31s"
-        },
-        {
-          "name": "ignore_max",
-          "description": "Free-item cap per order not applied",
-          "killed": true,
-          "summary": "1 failed, 10 passed in 0.30s"
-        }
-      ],
-      "start_summary": "4 failed, 7 passed in 0.20s",
-      "feature_tests_failing_at_start": 4,
-      "solved_summary": "11 passed in 0.07s",
-      "tests_total": 11,
-      "mutation_score": "2/2",
-      "valid": true,
-      "family": "deals",
-      "title": "Add a buy 3 get 1 free deal on OIL-1L",
-      "skipped_mutants": [],
-      "difficulty": "medium"
-    },
-    {
-      "task_id": "promo-03",
-      "checks": {
-        "repo_ok": true,
-        "rejects_start": true,
-        "solution_applies": true,
-        "solvable": true,
-        "stable": true,
-        "all_mutants_killed": true
-      },
-      "mutants": [
-        {
-          "name": "no_normalize",
-          "description": "Codes are not upper-cased or trimmed before matching",
-          "killed": true,
-          "summary": "1 failed, 15 passed in 0.37s"
-        },
-        {
-          "name": "threshold_strict",
-          "description": "Minimum spend uses > instead of >=",
-          "killed": true,
-          "summary": "1 failed, 15 passed in 0.73s"
-        },
-        {
-          "name": "apply_time_check",
-          "description": "Minimum spend checked only when the code is applied, never re-checked",
-          "killed": true,
-          "summary": "2 failed, 14 passed in 0.30s"
-        },
-        {
-          "name": "ignore_cap",
-          "description": "Maximum discount cap not applied",
-          "killed": true,
-          "summary": "1 failed, 15 passed in 0.41s"
-        }
-      ],
-      "start_summary": "9 failed, 7 passed in 0.33s",
-      "feature_tests_failing_at_start": 9,
-      "solved_summary": "16 passed in 0.08s",
-      "tests_total": 16,
-      "mutation_score": "4/4",
-      "valid": true,
-      "family": "promo",
-      "title": "Add the FESTIVE promo code to the cart",
-      "skipped_mutants": [
-        "round_half_up"
-      ],
-      "difficulty": "medium"
-    },
-    {
-      "task_id": "shipping-03",
-      "checks": {
-        "repo_ok": true,
-        "rejects_start": true,
-        "solution_applies": true,
-        "solvable": true,
-        "stable": true,
-        "all_mutants_killed": true
-      },
-      "mutants": [
-        {
-          "name": "empty_charged",
-          "description": "Empty carts are charged shipping",
-          "killed": true,
-          "summary": "2 failed, 11 passed in 0.37s"
-        },
-        {
-          "name": "free_strict",
-          "description": "Free-shipping threshold uses > instead of >=",
-          "killed": true,
-          "summary": "1 failed, 12 passed in 0.31s"
-        },
-        {
-          "name": "express_ignored",
-          "description": "Express surcharge never added",
-          "killed": true,
-          "summary": "2 failed, 11 passed in 0.31s"
-        },
-        {
-          "name": "express_free_wrong",
-          "description": "Express orders get (or lose) free shipping against the rules",
-          "killed": true,
-          "summary": "1 failed, 12 passed in 0.27s"
-        }
-      ],
-      "start_summary": "7 failed, 6 passed in 0.30s",
-      "feature_tests_failing_at_start": 7,
-      "solved_summary": "13 passed in 0.07s",
-      "tests_total": 13,
-      "mutation_score": "4/4",
-      "valid": true,
-      "family": "shipping",
-      "title": "Add shipping charges to the cart",
-      "skipped_mutants": [],
-      "difficulty": "medium"
-    },
-    {
-      "task_id": "deals-03",
-      "checks": {
-        "repo_ok": true,
-        "rejects_start": true,
-        "solution_applies": true,
-        "solvable": true,
-        "stable": true,
-        "all_mutants_killed": true
-      },
-      "mutants": [
-        {
-          "name": "group_off_by_one",
-          "description": "Counts groups of X instead of X+1 for buy X get 1 free",
-          "killed": true,
-          "summary": "1 failed, 10 passed in 0.22s"
-        },
-        {
-          "name": "ignore_max",
-          "description": "Free-item cap per order not applied",
-          "killed": true,
-          "summary": "1 failed, 10 passed in 0.30s"
-        }
-      ],
-      "start_summary": "4 failed, 7 passed in 0.32s",
-      "feature_tests_failing_at_start": 4,
-      "solved_summary": "11 passed in 0.07s",
-      "tests_total": 11,
-      "mutation_score": "2/2",
-      "valid": true,
-      "family": "deals",
-      "title": "Add a buy 2 get 1 free deal on SHIRT-M",
-      "skipped_mutants": [],
-      "difficulty": "medium"
+      "family": "duration",
+      "title": "Add a Duration parameter type",
+      "difficulty": "medium",
+      "params": {
+        "days": true,
+        "compound": false,
+        "bare_unit": "s",
+        "output": "seconds",
+        "positive_only": true,
+        "max_seconds": 3600
+      }
     }
   ],
   "distinctness": [
     {
-      "a": "promo-01",
-      "b": "promo-02",
+      "a": "bytesize-01",
+      "b": "bytesize-02",
       "a_solution_fails_b": true,
       "b_solution_fails_a": true
     },
     {
-      "a": "promo-01",
-      "b": "promo-03",
-      "a_solution_fails_b": true,
-      "b_solution_fails_a": true
-    },
-    {
-      "a": "shipping-01",
-      "b": "shipping-02",
-      "a_solution_fails_b": true,
-      "b_solution_fails_a": true
-    },
-    {
-      "a": "shipping-01",
-      "b": "shipping-03",
-      "a_solution_fails_b": true,
-      "b_solution_fails_a": true
-    },
-    {
-      "a": "deals-01",
-      "b": "deals-02",
-      "a_solution_fails_b": true,
-      "b_solution_fails_a": true
-    },
-    {
-      "a": "deals-01",
-      "b": "deals-03",
-      "a_solution_fails_b": true,
-      "b_solution_fails_a": true
-    },
-    {
-      "a": "promo-02",
-      "b": "promo-03",
-      "a_solution_fails_b": true,
-      "b_solution_fails_a": true
-    },
-    {
-      "a": "shipping-02",
-      "b": "shipping-03",
-      "a_solution_fails_b": true,
-      "b_solution_fails_a": true
-    },
-    {
-      "a": "deals-02",
-      "b": "deals-03",
+      "a": "duration-01",
+      "b": "duration-02",
       "a_solution_fails_b": true,
       "b_solution_fails_a": true
     }
-  ],
-  "params": {
-    "promo-01": {
-      "code": "THANKYOU",
-      "kind": "percent",
-      "pct": 20,
-      "cap": 30000,
-      "category": null,
-      "threshold_on": "cart",
-      "min_subtotal": 65400,
-      "single_use": true
-    },
-    "shipping-01": {
-      "base_fee": 4000,
-      "per_kg": 2000,
-      "express": null,
-      "free_above": 85200,
-      "express_free": false
-    },
-    "deals-01": {
-      "kind": "bxgy",
-      "sku": "RICE-5K",
-      "x": 1,
-      "max_free": 2
-    },
-    "promo-02": {
-      "code": "WEEKEND",
-      "kind": "percent",
-      "pct": 5,
-      "cap": null,
-      "category": "stationery",
-      "threshold_on": "cart",
-      "min_subtotal": null,
-      "single_use": false
-    },
-    "shipping-02": {
-      "base_fee": 4900,
-      "per_kg": null,
-      "express": null,
-      "free_above": 108200,
-      "express_free": false
-    },
-    "deals-02": {
-      "kind": "bxgy",
-      "sku": "OIL-1L",
-      "x": 3,
-      "max_free": 2
-    },
-    "promo-03": {
-      "code": "FESTIVE",
-      "kind": "percent",
-      "pct": 10,
-      "cap": 15000,
-      "category": null,
-      "threshold_on": "cart",
-      "min_subtotal": 63000,
-      "single_use": false
-    },
-    "shipping-03": {
-      "base_fee": 9900,
-      "per_kg": null,
-      "express": 5000,
-      "free_above": 85200,
-      "express_free": false
-    },
-    "deals-03": {
-      "kind": "bxgy",
-      "sku": "SHIRT-M",
-      "x": 2,
-      "max_free": 1
-    }
-  }
+  ]
 }

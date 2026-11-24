@@ -1,0 +1,10 @@
+[
+ "tests/test_task_feature.py::test_names_and_aliases_invoke_the_command",
+ "tests/test_task_feature.py::test_unknown_names_are_rejected",
+ "tests/test_task_feature.py::test_case_rule",
+ "tests/test_task_feature.py::test_unique_prefixes",
+ "tests/test_task_feature.py::test_ambiguous_prefix",
+ "tests/test_task_feature.py::test_prefix_with_case",
+ "tests/test_task_feature.py::test_help_lists_commands",
+ "tests/test_task_feature.py::test_aliases_api"
+]

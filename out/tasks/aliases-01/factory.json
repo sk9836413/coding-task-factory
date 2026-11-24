@@ -1,0 +1,108 @@
+{
+  "task_id": "aliases-01",
+  "title": "Add command aliases to Click groups",
+  "family": "aliases",
+  "params": {
+    "prefix_matching": true,
+    "case_insensitive": true,
+    "show_in_help": false
+  },
+  "signature": [
+    [
+      "case_insensitive",
+      true
+    ],
+    [
+      "prefix_matching",
+      true
+    ],
+    [
+      "show_in_help",
+      false
+    ]
+  ],
+  "repository": "pallets/click",
+  "base_commit": "cf19179e8e2fd54c601378cec9e0d21bb12b6fb1",
+  "base_tag": "8.5.1",
+  "fail_to_pass": 8,
+  "pass_to_pass": 2356,
+  "mutants": [
+    {
+      "name": "alias_not_resolved",
+      "description": "Aliases are stored but never used to find a command"
+    },
+    {
+      "name": "alias_name_kept",
+      "description": "The alias, not the registered name, is reported as the invoked subcommand"
+    },
+    {
+      "name": "case_rule_flipped",
+      "description": "Name matching is case-(in)sensitive against the requirement"
+    },
+    {
+      "name": "prefix_rule_flipped",
+      "description": "Prefix matching enabled/disabled against the requirement"
+    },
+    {
+      "name": "help_rule_flipped",
+      "description": "Aliases shown/hidden in help against the requirement"
+    },
+    {
+      "name": "ambiguous_prefix_picks_first",
+      "description": "An ambiguous prefix picks the first match instead of failing"
+    }
+  ],
+  "skipped_mutants": [],
+  "validation": {
+    "checks": {
+      "nop_reward_0": true,
+      "nop_regression_intact": true,
+      "oracle_reward_1": true,
+      "oracle_stable": true,
+      "all_mutants_killed": true,
+      "harbor_lint_clean": true
+    },
+    "mutation_score": "6/6",
+    "valid": true,
+    "mutants": [
+      {
+        "name": "alias_name_kept",
+        "killed": true,
+        "failed_tests": 4,
+        "tests": 8
+      },
+      {
+        "name": "alias_not_resolved",
+        "killed": true,
+        "failed_tests": 2,
+        "tests": 8
+      },
+      {
+        "name": "ambiguous_prefix_picks_first",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 8
+      },
+      {
+        "name": "case_rule_flipped",
+        "killed": true,
+        "failed_tests": 2,
+        "tests": 8
+      },
+      {
+        "name": "help_rule_flipped",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 8
+      },
+      {
+        "name": "prefix_rule_flipped",
+        "killed": true,
+        "failed_tests": 3,
+        "tests": 8
+      }
+    ],
+    "nop_reward": 0.0,
+    "oracle_reward": 1.0
+  }
+}

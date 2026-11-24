@@ -1,93 +1,109 @@
-"""End-to-end checks of the factory on the sample repo. Each test builds a task, writes it in Harbor format and
-validates it locally (fail before, pass after, stable, all known-wrong implementations rejected)."""
+"""Fast checks of the factory itself (the full nop/oracle/mutant validation runs in `python -m factory generate`)."""
+import json
 import random
 import tomllib
 from pathlib import Path
 
 import pytest
 
-from factory.families import deals, promo, shipping
+from factory.common import replace_once
+from factory.families import FAMILIES, aliases, bytesize, duration
 from factory.harbor import write_task
-from factory.pipeline import generate
-from factory.repo import Repo
-from factory.validate import cross_check, load_mutants, validate
+from factory.pipeline import _distance, generate
+from factory.repo import Repo, git
 
 ROOT = Path(__file__).resolve().parent.parent
-REPO = Repo(ROOT / "sample_repo")
+BASE = "cf19179e8e2fd54c601378cec9e0d21bb12b6fb1"
 
 
-def _package(task, tmp_path, task_id):
-    task.task_id = task_id
-    return write_task(task, REPO, tmp_path)
+@pytest.fixture(scope="module")
+def repo():
+    path = ROOT / "work" / "click"
+    if not (path / ".git").exists():
+        pytest.skip("run scripts/setup first (clones pallets/click into work/click)")
+    return Repo(path, BASE)
 
 
-def _assert_valid(d, task):
-    r = validate(d, task.mutants)
-    assert r["checks"] == {k: True for k in r["checks"]}, r
-    assert r["mutants"], "every task should ship at least one known-wrong implementation"
-    return r
+def test_base_commit_is_pinned_release(repo):
+    assert repo.base == BASE and len(repo.base) == 40
+    assert repo.tag == "8.5.1"
 
 
-def test_harbor_layout(tmp_path):
-    t = promo.build(REPO, promo.sample(REPO, random.Random(1)))
-    d = _package(t, tmp_path, "layout")
-    for rel in ["instruction.md", "task.toml", "environment/Dockerfile", "environment/repo/shopcart/cart.py",
-                "solution/solve.sh", "tests/test.sh", "tests/test_feature.py", "tests/regression/test_cart.py",
-                "factory.json"]:
+def test_features_do_not_exist_upstream(repo):
+    types = repo.read("src/click/types.py")
+    core = repo.read("src/click/core.py")
+    assert "class ByteSize" not in types and "class Duration" not in types
+    assert "aliases" not in core
+
+
+def test_bytesize_oracle():
+    p = {"system": "both", "case_sensitive": False, "allow_fraction": True, "default_unit": "KiB",
+         "max_bytes": 10 * 2**30}
+    assert bytesize.oracle(p, "1.5MB") == ("ok", 1_500_000)
+    assert bytesize.oracle(p, "2 kib") == ("ok", 2048)
+    assert bytesize.oracle(p, "3") == ("ok", 3072)
+    assert bytesize.oracle(p, "1.7B") == ("ok", 1)
+    assert bytesize.oracle(p, f"{10 * 2**30 + 1}B")[0] == "bad"
+    assert bytesize.oracle({**p, "allow_fraction": False}, "1.5MB") == ("bad", "fractional sizes are not allowed")
+
+
+def test_duration_oracle():
+    p = {"days": True, "compound": True, "bare_unit": "m", "output": "seconds", "positive_only": True,
+         "max_seconds": None}
+    assert duration.oracle(p, "1h30m") == ("ok", 5400)
+    assert duration.oracle(p, "90") == ("ok", 5400)
+    assert duration.oracle(p, "30m1h")[0] == "bad"
+    assert duration.oracle(p, "0s") == ("bad", "must be greater than zero")
+    assert duration.oracle({**p, "days": False}, "1d")[0] == "bad"
+
+
+def test_aliases_oracle():
+    p = {"prefix_matching": True, "case_insensitive": True, "show_in_help": True}
+    assert aliases.oracle(p, "ls") == ("ok", "list")
+    assert aliases.oracle(p, "RE") == ("ok", "remove")
+    assert aliases.oracle(p, "li") == ("bad", "Too many matches: lint, list")
+    assert aliases.oracle({**p, "prefix_matching": False}, "re") == ("bad", "No such command")
+
+
+def test_generation_is_deterministic_and_varied(repo):
+    one = generate(repo, 5, 7, list(FAMILIES))
+    two = generate(repo, 5, 7, list(FAMILIES))
+    assert [t.signature for t in one] == [t.signature for t in two]
+    assert len({t.signature for t in one}) == 5
+    assert {t.family for t in one} == set(FAMILIES)
+    for a in one:
+        for b in one:
+            if a is not b and a.family == b.family:
+                assert _distance(a.signature, b.signature) >= 2
+
+
+def test_package_layout_and_harbor_schema(repo, tmp_path):
+    from harbor.models.task.config import TaskConfig
+
+    t = bytesize.build(repo, bytesize.sample(repo, random.Random(1)))
+    t.task_id = "layout-01"
+    d = write_task(t, repo, tmp_path, ["tests/test_basic.py::test_basic_functionality"],
+                   ["tests/test_task_feature.py::test_x"])
+    for rel in ["instruction.md", "task.toml", "environment/Dockerfile", "solution/solve.sh",
+                "solution/solution.patch", "tests/test.sh", "tests/test_task_feature.py", "tests/fail_to_pass.json",
+                "tests/pass_to_pass.json", "tests/grade.py", "tests/harbor_report.py"]:
         assert (d / rel).exists(), rel
-    cfg = tomllib.loads((d / "task.toml").read_text(encoding="utf-8"))
-    assert cfg["version"] == "1.0" and cfg["verifier"]["timeout_sec"] > 0
-    assert "reward.txt" in (d / "tests/test.sh").read_text()
-    assert len(load_mutants(d)) == len(t.mutants)
+    raw = tomllib.loads((d / "task.toml").read_text(encoding="utf-8"))
+    cfg = TaskConfig.model_validate(raw)
+    assert cfg.metadata["base_commit"] == BASE
+    assert raw["verifier"]["environment_mode"] == "separate"
+    assert BASE in (d / "environment" / "Dockerfile").read_text()
+    assert json.loads((d / "tests" / "fail_to_pass.json").read_text()) == ["tests/test_task_feature.py::test_x"]
 
 
-def test_promo_with_every_rule(tmp_path):
-    p = {"code": "FESTIVE", "kind": "percent", "pct": 10, "cap": 15000, "category": "grocery",
-         "threshold_on": "eligible", "min_subtotal": 64900, "single_use": True}
-    t = promo.build(REPO, p)
-    r = _assert_valid(_package(t, tmp_path, "promo-all"), t)
-    assert {m["name"] for m in r["mutants"]} >= {"threshold_strict", "apply_time_check", "ignore_category",
-                                                  "single_use_not_enforced", "burn_without_discount"}
+def test_solution_patch_applies_to_base(repo, tmp_path):
+    t = duration.build(repo, duration.sample(repo, random.Random(3)))
+    patch = tmp_path / "s.patch"
+    patch.write_text(repo.patch_for(t.solution), encoding="utf-8", newline="\n")
+    ws = repo.scratch()
+    git("apply", "--check", str(patch), cwd=ws / "app")
 
 
-def test_flat_promo(tmp_path):
-    p = {"code": "WELCOME", "kind": "flat", "flat": 25000, "cap": None, "category": "stationery",
-         "threshold_on": "cart", "min_subtotal": None, "single_use": False}
-    t = promo.build(REPO, p)
-    r = _assert_valid(_package(t, tmp_path, "promo-flat"), t)
-    assert "flat_exceeds_base" in {m["name"] for m in r["mutants"]}
-
-
-def test_shipping_express_and_weight(tmp_path):
-    p = {"base_fee": 4900, "per_kg": 2000, "express": 10000, "free_above": 79900, "express_free": False}
-    t = shipping.build(REPO, p)
-    r = _assert_valid(_package(t, tmp_path, "ship-express"), t)
-    assert {"weight_floor", "express_ignored", "express_free_wrong"} <= {m["name"] for m in r["mutants"]}
-
-
-def test_category_tiered_deal(tmp_path):
-    p = {"kind": "tiered", "target": ("category", "grocery"), "n": 3, "pct": 15}
-    t = deals.build(REPO, p)
-    r = _assert_valid(_package(t, tmp_path, "deal-cat"), t)
-    assert "count_per_line" in {m["name"] for m in r["mutants"]}
-
-
-def test_untouched_repo_is_rejected_and_tasks_are_distinct(tmp_path):
-    a = deals.build(REPO, {"kind": "bxgy", "sku": "TEA-250", "x": 2, "max_free": None})
-    b = deals.build(REPO, {"kind": "bxgy", "sku": "TEA-250", "x": 3, "max_free": 1})
-    da, db = _package(a, tmp_path, "a"), _package(b, tmp_path, "b")
-    assert validate(da, [])["checks"]["rejects_start"]
-    assert cross_check(da, db) and cross_check(db, da)
-
-
-def test_generation_is_deterministic_and_varied():
-    one = [t.signature for t in generate(REPO, 6, 5, ["promo", "shipping", "deals"])]
-    two = [t.signature for t in generate(REPO, 6, 5, ["promo", "shipping", "deals"])]
-    assert one == two and len(set(one)) == 6
-
-
-def test_edit_anchor_missing_is_an_error(tmp_path):
-    src = REPO.read("shopcart/cart.py")
-    from factory.common import replace_once
+def test_edit_anchor_missing_is_an_error():
     with pytest.raises(ValueError):
-        replace_once(src, "def does_not_exist", "x", "missing")
+        replace_once("abc", "zzz", "y", "missing")

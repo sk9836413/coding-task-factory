@@ -1,0 +1,36 @@
+schema_version = "1.4"
+artifacts = []
+
+[task]
+name = "ska/click-duration-02"
+version = "1.0.0"
+description = "Add a Duration parameter type"
+keywords = ["click", "python", "feature-development", "duration", "param-type", "seconds"]
+
+[[task.authors]]
+name = "Team SKA"
+
+[metadata]
+repository = "pallets/click"
+repository_url = "https://github.com/pallets/click"
+base_commit = "cf19179e8e2fd54c601378cec9e0d21bb12b6fb1"
+base_tag = "8.5.1"
+license = "BSD-3-Clause"
+task_type = "feature-development"
+family = "duration"
+difficulty = "medium"
+generator = "Task Factory by Team SKA"
+
+[verifier]
+timeout_sec = 900.0
+environment_mode = "separate"
+
+[[verifier.collect]]
+command = "mkdir -p /logs/artifacts && cd /app && git add -A && git diff --cached --binary cf19179e8e2fd54c601378cec9e0d21bb12b6fb1 > /logs/artifacts/agent.patch"
+timeout_sec = 120.0
+
+[agent]
+timeout_sec = 1800.0
+
+[environment]
+build_timeout_sec = 900.0

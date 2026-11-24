@@ -1,0 +1,138 @@
+{
+  "task_id": "bytesize-01",
+  "title": "Add a ByteSize parameter type",
+  "family": "bytesize",
+  "params": {
+    "system": "binary",
+    "case_sensitive": false,
+    "allow_fraction": true,
+    "default_unit": "KiB",
+    "max_bytes": 2147483648
+  },
+  "signature": [
+    [
+      "allow_fraction",
+      true
+    ],
+    [
+      "case_sensitive",
+      false
+    ],
+    [
+      "default_unit",
+      "KiB"
+    ],
+    [
+      "max_bytes",
+      2147483648
+    ],
+    [
+      "system",
+      "binary"
+    ]
+  ],
+  "repository": "pallets/click",
+  "base_commit": "cf19179e8e2fd54c601378cec9e0d21bb12b6fb1",
+  "base_tag": "8.5.1",
+  "fail_to_pass": 9,
+  "pass_to_pass": 2356,
+  "mutants": [
+    {
+      "name": "case_rule_flipped",
+      "description": "Unit case sensitivity is the opposite of the requirement"
+    },
+    {
+      "name": "fraction_rule_flipped",
+      "description": "Fractional numbers accepted/rejected against the requirement"
+    },
+    {
+      "name": "space_not_allowed",
+      "description": "A space between the number and the unit is rejected"
+    },
+    {
+      "name": "binary_uses_1000",
+      "description": "Binary units (KiB, MiB, ...) use powers of 1000"
+    },
+    {
+      "name": "cross_system_accepted",
+      "description": "Units from the other unit system are accepted"
+    },
+    {
+      "name": "rounds_instead_of_floor",
+      "description": "Fractional byte counts are rounded instead of rounded down"
+    },
+    {
+      "name": "default_unit_ignored",
+      "description": "A bare number is treated as bytes instead of the default unit"
+    },
+    {
+      "name": "max_inclusive_wrong",
+      "description": "A size equal to the maximum is rejected"
+    }
+  ],
+  "skipped_mutants": [],
+  "validation": {
+    "checks": {
+      "nop_reward_0": true,
+      "nop_regression_intact": true,
+      "oracle_reward_1": true,
+      "oracle_stable": true,
+      "all_mutants_killed": true,
+      "harbor_lint_clean": true
+    },
+    "mutation_score": "8/8",
+    "valid": true,
+    "mutants": [
+      {
+        "name": "binary_uses_1000",
+        "killed": true,
+        "failed_tests": 5,
+        "tests": 9
+      },
+      {
+        "name": "case_rule_flipped",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 9
+      },
+      {
+        "name": "cross_system_accepted",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 9
+      },
+      {
+        "name": "default_unit_ignored",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 9
+      },
+      {
+        "name": "fraction_rule_flipped",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 9
+      },
+      {
+        "name": "max_inclusive_wrong",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 9
+      },
+      {
+        "name": "rounds_instead_of_floor",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 9
+      },
+      {
+        "name": "space_not_allowed",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 9
+      }
+    ],
+    "nop_reward": 0.0,
+    "oracle_reward": 1.0
+  }
+}

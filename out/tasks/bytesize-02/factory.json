@@ -1,0 +1,118 @@
+{
+  "task_id": "bytesize-02",
+  "title": "Add a ByteSize parameter type",
+  "family": "bytesize",
+  "params": {
+    "system": "decimal",
+    "case_sensitive": false,
+    "allow_fraction": false,
+    "default_unit": "B",
+    "max_bytes": 50000000000
+  },
+  "signature": [
+    [
+      "allow_fraction",
+      false
+    ],
+    [
+      "case_sensitive",
+      false
+    ],
+    [
+      "default_unit",
+      "B"
+    ],
+    [
+      "max_bytes",
+      50000000000
+    ],
+    [
+      "system",
+      "decimal"
+    ]
+  ],
+  "repository": "pallets/click",
+  "base_commit": "cf19179e8e2fd54c601378cec9e0d21bb12b6fb1",
+  "base_tag": "8.5.1",
+  "fail_to_pass": 9,
+  "pass_to_pass": 2356,
+  "mutants": [
+    {
+      "name": "case_rule_flipped",
+      "description": "Unit case sensitivity is the opposite of the requirement"
+    },
+    {
+      "name": "fraction_rule_flipped",
+      "description": "Fractional numbers accepted/rejected against the requirement"
+    },
+    {
+      "name": "space_not_allowed",
+      "description": "A space between the number and the unit is rejected"
+    },
+    {
+      "name": "decimal_uses_1024",
+      "description": "Decimal units (KB, MB, ...) use powers of 1024"
+    },
+    {
+      "name": "cross_system_accepted",
+      "description": "Units from the other unit system are accepted"
+    },
+    {
+      "name": "max_inclusive_wrong",
+      "description": "A size equal to the maximum is rejected"
+    }
+  ],
+  "skipped_mutants": [],
+  "validation": {
+    "checks": {
+      "nop_reward_0": true,
+      "nop_regression_intact": true,
+      "oracle_reward_1": true,
+      "oracle_stable": true,
+      "all_mutants_killed": true,
+      "harbor_lint_clean": true
+    },
+    "mutation_score": "6/6",
+    "valid": true,
+    "mutants": [
+      {
+        "name": "case_rule_flipped",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 9
+      },
+      {
+        "name": "cross_system_accepted",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 9
+      },
+      {
+        "name": "decimal_uses_1024",
+        "killed": true,
+        "failed_tests": 3,
+        "tests": 9
+      },
+      {
+        "name": "fraction_rule_flipped",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 9
+      },
+      {
+        "name": "max_inclusive_wrong",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 9
+      },
+      {
+        "name": "space_not_allowed",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 9
+      }
+    ],
+    "nop_reward": 0.0,
+    "oracle_reward": 1.0
+  }
+}

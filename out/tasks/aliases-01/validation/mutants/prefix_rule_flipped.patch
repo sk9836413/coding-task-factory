@@ -1,0 +1,63 @@
+diff --git a/src/click/core.py b/src/click/core.py
+index e4b6b57..db29c77 100644
+--- a/src/click/core.py
++++ b/src/click/core.py
+@@ -1047,6 +1047,7 @@ class Command:
+         no_args_is_help: bool = False,
+         hidden: bool = False,
+         deprecated: bool | str = False,
++        aliases: cabc.Sequence[str] | None = None,
+     ) -> None:
+         #: the name the command thinks it has.  Upon registering a command
+         #: on a :class:`Group` the group will default the command name
+@@ -1076,6 +1077,8 @@ class Command:
+         self.no_args_is_help = no_args_is_help
+         self.hidden = hidden
+         self.deprecated = deprecated
++        #: Other names the command can be invoked by within a group.
++        self.aliases: list[str] = list(aliases or [])
+ 
+     def to_info_dict(self, ctx: Context) -> dict[str, t.Any]:
+         return {
+@@ -1958,9 +1961,25 @@ class Group(Command):
+ 
+     def get_command(self, ctx: Context, cmd_name: str) -> Command | None:
+         """Given a context and a command name, this returns a :class:`Command`
+-        object if it exists or returns ``None``.
++        object if it exists or returns ``None``. Aliases are also checked.
+         """
+-        return self.commands.get(cmd_name)
++        cmd = self.commands.get(cmd_name)
++
++        if cmd is not None:
++            return cmd
++
++        def norm(name: str) -> str:
++            return name.lower()
++
++        wanted = norm(cmd_name)
++
++        for command in self.commands.values():
++            names = [command.name or "", *getattr(command, "aliases", [])]
++
++            if any(norm(name) == wanted for name in names):
++                return command
++
++        return None
+ 
+     def list_commands(self, ctx: Context) -> list[str]:
+         """Returns a list of subcommand names in the order they should appear."""
+@@ -2099,6 +2118,13 @@ class Group(Command):
+             cmd_name = ctx.token_normalize_func(cmd_name)
+             cmd = self.get_command(ctx, cmd_name)
+ 
++        # Report the registered name even when an alias or prefix was used.
++        if cmd is not None:
++            cmd_name = next(
++                (key for key, value in self.commands.items() if value is cmd),
++                cmd.name or cmd_name,
++            )
++
+         # If we don't find the command we want to show an error message
+         # to the user that it was not provided.  However, there is
+         # something else we should do: if the first argument looks like

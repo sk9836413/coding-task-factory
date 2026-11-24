@@ -2,6 +2,7 @@
 __pycache__/
 *.pyc
 .pytest_cache/
+.cache/
+work/
 out_*/
 run_*.txt
-out_run.txt

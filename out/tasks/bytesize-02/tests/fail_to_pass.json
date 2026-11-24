@@ -1,0 +1,11 @@
+[
+ "tests/test_task_feature.py::test_every_unit_is_converted",
+ "tests/test_task_feature.py::test_bare_number_uses_default_unit",
+ "tests/test_task_feature.py::test_optional_space_between_number_and_unit",
+ "tests/test_task_feature.py::test_unit_case_rule",
+ "tests/test_task_feature.py::test_fractional_values",
+ "tests/test_task_feature.py::test_invalid_values_are_rejected",
+ "tests/test_task_feature.py::test_units_of_the_other_system_are_rejected",
+ "tests/test_task_feature.py::test_maximum_is_inclusive",
+ "tests/test_task_feature.py::test_python_values_and_api"
+]

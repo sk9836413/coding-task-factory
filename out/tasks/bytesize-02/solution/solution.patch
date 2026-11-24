@@ -1,0 +1,110 @@
+diff --git a/src/click/__init__.py b/src/click/__init__.py
+index a34ab02..2399bb3 100644
+--- a/src/click/__init__.py
++++ b/src/click/__init__.py
+@@ -54,6 +54,7 @@ from .termui import secho as secho
+ from .termui import style as style
+ from .termui import unstyle as unstyle
+ from .types import BOOL as BOOL
++from .types import ByteSize as ByteSize
+ from .types import Choice as Choice
+ from .types import DateTime as DateTime
+ from .types import File as File
+diff --git a/src/click/types.py b/src/click/types.py
+index b6e98a9..339b313 100644
+--- a/src/click/types.py
++++ b/src/click/types.py
+@@ -4,6 +4,7 @@ import abc
+ import collections.abc as cabc
+ import enum
+ import os
++import re
+ import stat
+ import sys
+ import typing as t
+@@ -907,6 +908,85 @@ class UUIDParameterType(ParamType[uuid.UUID]):
+         return "UUID"
+ 
+ 
++class ByteSize(ParamType[int]):
++    """Converts a human-readable size such as ``10MiB`` or ``1.5 GB`` into a
++    number of bytes.
++
++    :param max_bytes: Reject sizes larger than this many bytes.
++    """
++
++    name = "size"
++    _units = {
++        "B": 1,
++        "KB": 1000,
++        "MB": 1000000,
++        "GB": 1000000000,
++        "TB": 1000000000000,
++    }
++    _default_unit = "B"
++
++    def __init__(self, max_bytes: int | None = None) -> None:
++        self.max_bytes = max_bytes
++
++    def to_info_dict(self) -> dict[str, t.Any]:
++        info_dict = super().to_info_dict()
++        info_dict["max_bytes"] = self.max_bytes
++        return info_dict
++
++    def convert(
++        self, value: t.Any, param: Parameter | None, ctx: Context | None
++    ) -> int:
++        if isinstance(value, int) and not isinstance(value, bool):
++            size = value
++        else:
++            match = re.fullmatch(r"(\d+(?:\.\d+)?) ?([A-Za-z]*)", str(value).strip())
++
++            if match is None:
++                self.fail(
++                    _("{value!r} is not a valid size.").format(value=value), param, ctx
++                )
++
++            number, unit = match.groups()
++
++            if not unit:
++                factor = self._units[self._default_unit]
++            else:
++                factor = {k.lower(): v for k, v in self._units.items()}.get(unit.lower())
++
++            if factor is None:
++                self.fail(
++                    _("{value!r} is not a valid size.").format(value=value), param, ctx
++                )
++
++            if "." in number:
++                self.fail(
++                    _("{value!r} is not a valid size: fractional sizes are not allowed.").format(
++                        value=value
++                    ),
++                    param,
++                    ctx,
++                )
++
++            int_part, _dot, frac_part = number.partition(".")
++            whole = int(int_part + frac_part)
++            scale = 10 ** len(frac_part)
++            size = whole * factor // scale
++
++        if self.max_bytes is not None and size > self.max_bytes:
++            self.fail(
++                _("{value!r} is larger than the maximum of {max} bytes.").format(
++                    value=value, max=self.max_bytes
++                ),
++                param,
++                ctx,
++            )
++
++        return size
++
++    def __repr__(self) -> str:
++        return "ByteSize"
++
++
+ class FileInfoDict(ParamTypeInfoDict):
+     mode: str
+     encoding: str | None

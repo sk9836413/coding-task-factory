@@ -1,55 +1,38 @@
 # Task factory run
 
-- Repository: `sample_repo` at `sha256:74a426e496f4cc9c`
-- Seed 7: 9 tasks generated, **9 valid**, in 124.1 s
-- Known-wrong implementations rejected by the tests: **28/28**
-- Same-family task pairs whose reference solutions fail each other's tests: **9/9**
+- Repository: `pallets/click` at `cf19179e8e2fd54c601378cec9e0d21bb12b6fb1` (tag `8.5.1`)
+- Existing tests passing at the base commit (pass_to_pass): 2356
+- Seed 7: 5 tasks generated, **5 valid**, in 472.5 s
+- Known-wrong implementations caught by the feature tests: **35/35**
+- Same-family task pairs whose reference solutions fail each other's tests: **2/2**
 
-| Task | Title | Difficulty | Untouched repo fails | Reference passes | Stable | Mutants killed | Tests | Status |
+| Task | Title | nop reward | oracle reward | Regression intact (nop) | Stable | Mutants caught | harbor lint | Status |
 |---|---|---|---|---|---|---|---|---|
-| promo-01 | Add the THANKYOU promo code to the cart | medium | yes | yes | yes | 6/6 | 18 | valid |
-| shipping-01 | Add shipping charges to the cart | medium | yes | yes | yes | 4/4 | 13 | valid |
-| deals-01 | Add a buy 1 get 1 free deal on RICE-5K | medium | yes | yes | yes | 2/2 | 11 | valid |
-| promo-02 | Add the WEEKEND promo code to the cart | medium | yes | yes | yes | 2/2 | 14 | valid |
-| shipping-02 | Add shipping charges to the cart | easy | yes | yes | yes | 2/2 | 11 | valid |
-| deals-02 | Add a buy 3 get 1 free deal on OIL-1L | medium | yes | yes | yes | 2/2 | 11 | valid |
-| promo-03 | Add the FESTIVE promo code to the cart | medium | yes | yes | yes | 4/4 | 16 | valid |
-| shipping-03 | Add shipping charges to the cart | medium | yes | yes | yes | 4/4 | 13 | valid |
-| deals-03 | Add a buy 2 get 1 free deal on SHIRT-M | medium | yes | yes | yes | 2/2 | 11 | valid |
+| bytesize-01 | Add a ByteSize parameter type | 0.0 | 1.0 | yes | yes | 8/8 | yes | valid |
+| duration-01 | Add a Duration parameter type | 0.0 | 1.0 | yes | yes | 8/8 | yes | valid |
+| aliases-01 | Add command aliases to Click groups | 0.0 | 1.0 | yes | yes | 6/6 | yes | valid |
+| bytesize-02 | Add a ByteSize parameter type | 0.0 | 1.0 | yes | yes | 6/6 | yes | valid |
+| duration-02 | Add a Duration parameter type | 0.0 | 1.0 | yes | yes | 7/7 | yes | valid |
 
-## Mutants per task
+## Rules per task
 
-**promo-01**: killed: Codes are not upper-cased or trimmed before matching; killed: Minimum spend uses > instead of >=; killed: Minimum spend checked only when the code is applied, never re-checked; killed: Maximum discount cap not applied; killed: Same customer can reuse the code; killed: Code marked as used even when it gave no discount
-  (no scenario could expose: round_half_up)
+- **bytesize-01**: system=binary, case_sensitive=False, allow_fraction=True, default_unit=KiB, max_bytes=2147483648
+- **duration-01**: days=False, compound=True, bare_unit=s, output=timedelta, positive_only=True, max_seconds=3600
+- **aliases-01**: prefix_matching=True, case_insensitive=True, show_in_help=False
+- **bytesize-02**: system=decimal, case_sensitive=False, allow_fraction=False, default_unit=B, max_bytes=50000000000
+- **duration-02**: days=True, compound=False, bare_unit=s, output=seconds, positive_only=True, max_seconds=3600
 
-**shipping-01**: killed: Empty carts are charged shipping; killed: Weight charge counts whole kilograms instead of started kilograms; killed: The first kilogram is charged as extra weight; killed: Free-shipping threshold uses > instead of >=
+## Mutants
 
-**deals-01**: killed: Counts groups of X instead of X+1 for buy X get 1 free; killed: Free-item cap per order not applied
-
-**promo-02**: killed: Codes are not upper-cased or trimmed before matching; killed: Discount applied to the whole cart instead of the eligible category
-  (no scenario could expose: round_half_up)
-
-**shipping-02**: killed: Empty carts are charged shipping; killed: Free-shipping threshold uses > instead of >=
-
-**deals-02**: killed: Counts groups of X instead of X+1 for buy X get 1 free; killed: Free-item cap per order not applied
-
-**promo-03**: killed: Codes are not upper-cased or trimmed before matching; killed: Minimum spend uses > instead of >=; killed: Minimum spend checked only when the code is applied, never re-checked; killed: Maximum discount cap not applied
-  (no scenario could expose: round_half_up)
-
-**shipping-03**: killed: Empty carts are charged shipping; killed: Free-shipping threshold uses > instead of >=; killed: Express surcharge never added; killed: Express orders get (or lose) free shipping against the rules
-
-**deals-03**: killed: Counts groups of X instead of X+1 for buy X get 1 free; killed: Free-item cap per order not applied
+- **bytesize-01**: binary_uses_1000 (caught), case_rule_flipped (caught), cross_system_accepted (caught), default_unit_ignored (caught), fraction_rule_flipped (caught), max_inclusive_wrong (caught), rounds_instead_of_floor (caught), space_not_allowed (caught)
+- **duration-01**: bare_unit_wrong (caught), compound_rule_flipped (caught), days_rule_flipped (caught), max_inclusive_wrong (caught), minutes_as_seconds (caught), order_not_checked (caught), wrong_output_type (caught), zero_rule_flipped (caught)
+- **aliases-01**: alias_name_kept (caught), alias_not_resolved (caught), ambiguous_prefix_picks_first (caught), case_rule_flipped (caught), help_rule_flipped (caught), prefix_rule_flipped (caught)
+- **bytesize-02**: case_rule_flipped (caught), cross_system_accepted (caught), decimal_uses_1024 (caught), fraction_rule_flipped (caught), max_inclusive_wrong (caught), space_not_allowed (caught)
+- **duration-02**: bare_unit_wrong (caught), compound_rule_flipped (caught), days_rule_flipped (caught), max_inclusive_wrong (caught), minutes_as_seconds (caught), wrong_output_type (caught), zero_rule_flipped (caught)
 
 ## Distinctness (same family)
 
 | A | B | A's solution fails B | B's solution fails A |
 |---|---|---|---|
-| promo-01 | promo-02 | True | True |
-| promo-01 | promo-03 | True | True |
-| shipping-01 | shipping-02 | True | True |
-| shipping-01 | shipping-03 | True | True |
-| deals-01 | deals-02 | True | True |
-| deals-01 | deals-03 | True | True |
-| promo-02 | promo-03 | True | True |
-| shipping-02 | shipping-03 | True | True |
-| deals-02 | deals-03 | True | True |
+| bytesize-01 | bytesize-02 | True | True |
+| duration-01 | duration-02 | True | True |

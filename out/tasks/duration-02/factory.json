@@ -1,0 +1,133 @@
+{
+  "task_id": "duration-02",
+  "title": "Add a Duration parameter type",
+  "family": "duration",
+  "params": {
+    "days": true,
+    "compound": false,
+    "bare_unit": "s",
+    "output": "seconds",
+    "positive_only": true,
+    "max_seconds": 3600
+  },
+  "signature": [
+    [
+      "bare_unit",
+      "s"
+    ],
+    [
+      "compound",
+      false
+    ],
+    [
+      "days",
+      true
+    ],
+    [
+      "max_seconds",
+      3600
+    ],
+    [
+      "output",
+      "seconds"
+    ],
+    [
+      "positive_only",
+      true
+    ]
+  ],
+  "repository": "pallets/click",
+  "base_commit": "cf19179e8e2fd54c601378cec9e0d21bb12b6fb1",
+  "base_tag": "8.5.1",
+  "fail_to_pass": 9,
+  "pass_to_pass": 2356,
+  "mutants": [
+    {
+      "name": "minutes_as_seconds",
+      "description": "The m unit is counted as seconds"
+    },
+    {
+      "name": "bare_unit_wrong",
+      "description": "A bare number uses the wrong unit"
+    },
+    {
+      "name": "compound_rule_flipped",
+      "description": "Compound values (1h30m) accepted/rejected against the requirement"
+    },
+    {
+      "name": "days_rule_flipped",
+      "description": "The d unit accepted/rejected against the requirement"
+    },
+    {
+      "name": "zero_rule_flipped",
+      "description": "Zero durations accepted/rejected against the requirement"
+    },
+    {
+      "name": "wrong_output_type",
+      "description": "Returns seconds instead of timedelta, or the other way round"
+    },
+    {
+      "name": "max_inclusive_wrong",
+      "description": "A duration equal to the maximum is rejected"
+    }
+  ],
+  "skipped_mutants": [],
+  "validation": {
+    "checks": {
+      "nop_reward_0": true,
+      "nop_regression_intact": true,
+      "oracle_reward_1": true,
+      "oracle_stable": true,
+      "all_mutants_killed": true,
+      "harbor_lint_clean": true
+    },
+    "mutation_score": "7/7",
+    "valid": true,
+    "mutants": [
+      {
+        "name": "bare_unit_wrong",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 9
+      },
+      {
+        "name": "compound_rule_flipped",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 9
+      },
+      {
+        "name": "days_rule_flipped",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 9
+      },
+      {
+        "name": "max_inclusive_wrong",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 9
+      },
+      {
+        "name": "minutes_as_seconds",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 9
+      },
+      {
+        "name": "wrong_output_type",
+        "killed": true,
+        "failed_tests": 4,
+        "tests": 9
+      },
+      {
+        "name": "zero_rule_flipped",
+        "killed": true,
+        "failed_tests": 1,
+        "tests": 9
+      }
+    ],
+    "nop_reward": 0.0,
+    "oracle_reward": 1.0
+  }
+}

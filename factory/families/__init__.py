@@ -1,3 +1,3 @@
-from . import deals, promo, shipping
+from . import aliases, bytesize, duration
 
-FAMILIES = {m.NAME: m for m in (promo, shipping, deals)}
+FAMILIES = {m.NAME: m for m in (bytesize, duration, aliases)}

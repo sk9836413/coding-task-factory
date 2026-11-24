@@ -1,74 +1,83 @@
-"""Read-only view of the target repository: version, files, and its product catalog."""
+"""The target repository at its pinned base commit: reading files, scratch clones, patches, baseline tests."""
 from __future__ import annotations
 
-import hashlib
 import json
+import os
+import re
+import shutil
 import subprocess
-import sys
-from dataclasses import dataclass
-from itertools import combinations, product
+import tempfile
 from pathlib import Path
 
-SKIP_DIRS = {"__pycache__", ".git", ".pytest_cache", ".venv"}
+from . import assets
 
 
-@dataclass(frozen=True)
-class Item:
-    sku: str
-    price: int
-    category: str
-    weight_g: int
+def git(*args: str, cwd: Path, check: bool = True) -> str:
+    r = subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, encoding="utf-8")
+    if check and r.returncode != 0:
+        raise RuntimeError(f"git {' '.join(args)} failed: {r.stderr.strip()}")
+    return r.stdout
 
 
 class Repo:
-    def __init__(self, path: Path):
-        self.path = Path(path).resolve()
-        if not (self.path / "shopcart" / "cart.py").exists():
-            raise SystemExit(f"{self.path} does not look like the shopcart repo (shopcart/cart.py missing)")
-        self._catalog: list[Item] | None = None
+    """A local clone of pallets/click (or another allowed repo) checked out at a pinned base commit."""
 
-    def files(self) -> list[str]:
-        out = []
-        for p in sorted(self.path.rglob("*")):
-            if p.is_file() and not (set(p.relative_to(self.path).parts) & SKIP_DIRS):
-                out.append(p.relative_to(self.path).as_posix())
-        return out
+    def __init__(self, path: Path, base: str, url: str = "https://github.com/pallets/click.git",
+                 name: str = "pallets/click", license: str = "BSD-3-Clause"):
+        self.path = Path(path).resolve()
+        self.url, self.name, self.license = url, name, license
+        if not (self.path / ".git").exists():
+            raise SystemExit(f"{self.path} is not a git clone. Run scripts/setup.ps1 (or setup.sh) first.")
+        self.base = git("rev-parse", f"{base}^{{commit}}", cwd=self.path).strip()
+        if not re.fullmatch(r"[0-9a-f]{40}", self.base):
+            raise SystemExit(f"Could not resolve base commit {base!r}")
+        self.tag = git("describe", "--tags", "--exact-match", self.base, cwd=self.path, check=False).strip() or None
 
     def read(self, rel: str) -> str:
-        return (self.path / rel).read_text(encoding="utf-8")
+        """File content at the base commit, regardless of what is checked out."""
+        return git("show", f"{self.base}:{rel}", cwd=self.path)
 
-    def version(self) -> str:
-        """Git commit if the repo is a git checkout, otherwise a content hash of all files."""
-        if (self.path / ".git").exists():
-            sha = subprocess.run(["git", "rev-parse", "HEAD"], cwd=self.path, capture_output=True, text=True)
-            if sha.returncode == 0:
-                return "git:" + sha.stdout.strip()
-        h = hashlib.sha256()
-        for rel in self.files():
-            h.update(rel.encode())
-            h.update((self.path / rel).read_bytes().replace(b"\r\n", b"\n"))
-        return "sha256:" + h.hexdigest()[:16]
+    def scratch(self) -> Path:
+        """A throwaway clone at the base commit (shares objects, so it is fast)."""
+        d = Path(tempfile.mkdtemp(prefix="tf-click-"))
+        git("clone", "--quiet", "--shared", "--no-checkout", str(self.path), str(d / "app"), cwd=d)
+        git("-c", "advice.detachedHead=false", "checkout", "--quiet", self.base, cwd=d / "app")
+        return d
 
-    def catalog(self) -> list[Item]:
-        """Load the catalog by importing the repo in a separate process (keeps this process clean)."""
-        if self._catalog is None:
-            code = ("import json; from shopcart.catalog import CATALOG; "
-                    "print(json.dumps([[p.sku, p.price, p.category, p.weight_g] for p in CATALOG.values()]))")
-            r = subprocess.run([sys.executable, "-c", code], cwd=self.path, capture_output=True, text=True, check=True)
-            self._catalog = [Item(*row) for row in json.loads(r.stdout)]
-        return self._catalog
+    def patch_for(self, files: dict[str, str]) -> str:
+        """Unified diff (base -> files) that `git apply` accepts."""
+        d = self.scratch()
+        try:
+            app = d / "app"
+            for rel, content in files.items():
+                p = app / rel
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_text(content, encoding="utf-8", newline="\n")
+            git("add", "-A", cwd=app)
+            return git("diff", "--cached", "--binary", self.base, cwd=app)
+        finally:
+            shutil.rmtree(d, ignore_errors=True)
 
-    def categories(self) -> list[str]:
-        return sorted({i.category for i in self.catalog()})
-
-    def baskets(self, max_qty: int = 3) -> list[dict[str, int]]:
-        """Small baskets (1 or 2 distinct SKUs, quantity 1..max_qty) used to build test scenarios."""
-        skus = [i.sku for i in self.catalog()]
-        out = [{s: q} for s in skus for q in range(1, max_qty + 1)]
-        for a, b in combinations(skus, 2):
-            for qa, qb in product(range(1, max_qty + 1), repeat=2):
-                out.append({a: qa, b: qb})
-        return out
-
-    def item(self, sku: str) -> Item:
-        return next(i for i in self.catalog() if i.sku == sku)
+    def baseline_tests(self, python: str, cache_dir: Path) -> list[str]:
+        """Node ids of every test that passes at the base commit (the pass_to_pass list)."""
+        cache = cache_dir / f"pass_to_pass-{self.base[:12]}.json"
+        if cache.exists():
+            return json.loads(cache.read_text(encoding="utf-8"))
+        d = self.scratch()
+        try:
+            app, tests = d / "app", d / "tests"
+            tests.mkdir()
+            (tests / "harbor_report.py").write_text(assets.REPORT_PLUGIN, encoding="utf-8", newline="\n")
+            env = {**os.environ, "PYTHONPATH": os.pathsep.join([str(app / "src"), str(tests)]),
+                   "HARBOR_REPORT": str(d / "report.json"), "PYTHONDONTWRITEBYTECODE": "1"}
+            subprocess.run([python, "-m", "pytest", "-q", "-p", "no:cacheprovider", "-p", "harbor_report", "tests"],
+                           cwd=app, env=env, capture_output=True, timeout=900)
+            outcomes = json.loads((d / "report.json").read_text(encoding="utf-8"))
+        finally:
+            shutil.rmtree(d, ignore_errors=True)
+        passed = sorted(n for n, o in outcomes.items() if o == "passed")
+        if not passed:
+            raise SystemExit("No tests passed at the base commit; check the Python environment.")
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        cache.write_text(json.dumps(passed, indent=0), encoding="utf-8")
+        return passed

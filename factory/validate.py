@@ -1,125 +1,137 @@
-"""Validates a Harbor task folder the same way Harbor would grade it, but locally (no Docker needed).
+"""Local mirror of Harbor's validation matrix, plus `harbor lint`.
 
-Checks:
-  repo_ok        the original repo passes its own tests
-  rejects_start  the verifier gives reward 0 on the untouched repo (the task is not already solved)
-  solvable       after solution/solve.sh the verifier gives reward 1
-  stable         the solved repo gets reward 1 again on a second run (no flaky tests)
-  mutants        every known wrong implementation gets reward 0 (tests catch bad behaviour)
+Harbor runs (in Docker):
+  harbor run -p <task> -a nop    -> expected reward 0.0
+  harbor run -p <task> -a oracle -> expected reward 1.0
+This module reproduces the same flow with the task's own scripts on a scratch clone at base_commit:
+  agent phase  : nothing (nop) or solution/solve.sh (oracle)
+  collect hook : git add -A && git diff --cached --binary <base> > /logs/artifacts/agent.patch
+  verifier     : tests/test.sh in a *fresh* clone, which applies the patch, restores tests, runs pytest, grades.
+Extra checks: every known-wrong implementation (validation/mutants/*.patch) must be caught by the feature
+tests, and the oracle must be stable on a second run.
 """
 from __future__ import annotations
 
 import json
 import os
-import re
 import shutil
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
 
+from .repo import Repo, git
+
 BASH = shutil.which("bash") or "bash"
 
 
-def _env(ws: Path) -> dict:
+def _env(**paths: Path) -> dict:
     env = dict(os.environ)
-    env.update(APP_DIR=(ws / "app").as_posix(), TESTS_DIR=(ws / "tests").as_posix(),
-               LOGS_DIR=(ws / "logs").as_posix(), PYTHON=Path(sys.executable).as_posix())
+    env.update({k: v.as_posix() for k, v in paths.items()})
+    env["PYTHON"] = Path(sys.executable).as_posix()
+    env["PYTHONDONTWRITEBYTECODE"] = "1"
+    env["PATHSEP"] = os.pathsep  # test.sh defaults to ":" (Linux, as in Harbor's containers)
     return env
 
 
-def _workspace(task: Path, files: dict[str, str] | None = None) -> Path:
-    ws = Path(tempfile.mkdtemp(prefix="tf-"))
-    shutil.copytree(task / "environment" / "repo", ws / "app")
-    shutil.copytree(task / "tests", ws / "tests")
-    (ws / "logs").mkdir()
-    for rel, content in (files or {}).items():
-        (ws / "app" / rel).write_text(content, encoding="utf-8", newline="\n")
-    return ws
+def _verify(repo: Repo, task: Path, agent_patch: str | None) -> dict:
+    """Fresh verifier container equivalent: returns grading.json."""
+    ws = repo.scratch()
+    try:
+        tests, logs = ws / "tests", ws / "logs"
+        shutil.copytree(task / "tests", tests)
+        (logs / "artifacts").mkdir(parents=True)
+        if agent_patch:
+            (logs / "artifacts" / "agent.patch").write_text(agent_patch, encoding="utf-8", newline="\n")
+        subprocess.run([BASH, (tests / "test.sh").as_posix()], capture_output=True, timeout=1200,
+                       env=_env(APP_DIR=ws / "app", TESTS_DIR=tests, LOGS_DIR=logs))
+        grading = logs / "verifier" / "grading.json"
+        if not grading.exists():
+            apply_log = logs / "verifier" / "apply.log"
+            reward_file = logs / "verifier" / "reward.txt"
+            return {"reward": float(reward_file.read_text()) if reward_file.exists() else None,
+                    "note": apply_log.read_text(errors="replace") if apply_log.exists() else "no grading output"}
+        return json.loads(grading.read_text(encoding="utf-8"))
+    finally:
+        shutil.rmtree(ws, ignore_errors=True)
 
 
-def _verify(ws: Path) -> tuple[int, str]:
-    subprocess.run([BASH, (ws / "tests" / "test.sh").as_posix()], env=_env(ws), capture_output=True, timeout=180)
-    reward_file = ws / "logs" / "verifier" / "reward.txt"
-    reward = int(reward_file.read_text().strip()) if reward_file.exists() else -1
-    log = (ws / "logs" / "verifier" / "pytest.log")
-    summary = log.read_text(errors="replace").strip().splitlines()[-1] if log.exists() else "no log"
-    return reward, summary
+def _agent_phase(repo: Repo, task: Path, oracle: bool) -> str:
+    """Agent container equivalent: run solve.sh (oracle) or nothing (nop), then the collect hook."""
+    ws = repo.scratch()
+    try:
+        app = ws / "app"
+        if oracle:
+            r = subprocess.run([BASH, (task / "solution" / "solve.sh").as_posix()], capture_output=True, text=True,
+                               env=_env(APP_DIR=app, SOLUTION_DIR=task / "solution"), timeout=120)
+            if r.returncode != 0:
+                raise RuntimeError(f"solve.sh failed: {r.stderr.strip()}")
+        git("add", "-A", cwd=app)
+        return git("diff", "--cached", "--binary", repo.base, cwd=app)
+    finally:
+        shutil.rmtree(ws, ignore_errors=True)
 
 
-def _counts(summary: str) -> dict:
-    return {k: int(v) for v, k in re.findall(r"(\d+) (passed|failed|error)", summary)}
+def _feature_only(repo: Repo, task: Path, patch: str) -> tuple[int, int]:
+    """Runs just the feature tests against a patch: (failed, total)."""
+    ws = repo.scratch()
+    try:
+        app = ws / "app"
+        pf = ws / "p.patch"
+        pf.write_text(patch, encoding="utf-8", newline="\n")
+        git("apply", "--whitespace=nowarn", str(pf), cwd=app)
+        shutil.copy(task / "tests" / "test_task_feature.py", app / "tests" / "test_task_feature.py")
+        out = ws / "o.json"
+        subprocess.run([sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "-p", "harbor_report",
+                        "tests/test_task_feature.py"], cwd=app, capture_output=True, timeout=600,
+                       env={**_env(), "PYTHONPATH": os.pathsep.join([str(app / "src"), str(task / "tests")]),
+                            "HARBOR_REPORT": str(out)})
+        res = json.loads(out.read_text(encoding="utf-8")) if out.exists() else {}
+        return sum(v != "passed" for v in res.values()), len(res)
+    finally:
+        shutil.rmtree(ws, ignore_errors=True)
 
 
-def load_mutants(task: Path) -> list:
-    """Read validation/mutants/<name>/... back into Mutant objects."""
-    from .common import Mutant
-    meta = json.loads((task / "factory.json").read_text(encoding="utf-8"))
-    desc = {m["name"]: m["description"] for m in meta.get("mutants", [])}
-    out = []
-    root = task / "validation" / "mutants"
-    for d in sorted(root.iterdir()) if root.exists() else []:
-        files = {p.relative_to(d).as_posix(): p.read_text(encoding="utf-8") for p in d.rglob("*") if p.is_file()}
-        out.append(Mutant(d.name, desc.get(d.name, ""), files))
-    return out
+def harbor_lint(task: Path) -> dict:
+    exe = shutil.which("harbor") or str(Path(sys.executable).with_name("harbor.exe" if os.name == "nt" else "harbor"))
+    r = subprocess.run([exe, "lint", "--json", str(task)], capture_output=True, text=True, encoding="utf-8",
+                       env={**os.environ, "PYTHONUTF8": "1", "PYTHONIOENCODING": "utf-8"})
+    try:
+        findings = json.loads(r.stdout or "[]")
+    except json.JSONDecodeError:
+        findings = [{"rule": "lint-output", "message": (r.stdout + r.stderr)[-500:]}]
+    return {"ok": not findings, "findings": findings}
 
 
-def validate(task: Path, mutants: list | None = None) -> dict:
-    task = Path(task)
-    if mutants is None:
-        mutants = load_mutants(task)
-    res: dict = {"task_id": task.name, "checks": {}, "mutants": []}
+def validate(repo: Repo, task: Path, run_mutants: bool = True) -> dict:
+    task = Path(task).resolve()
+    res: dict = {"task_id": task.name, "checks": {}}
     c = res["checks"]
 
-    ws = _workspace(task)
-    try:
-        # The untouched repo must pass its own original tests (the verifier's copy may be intentionally updated).
-        r = subprocess.run([sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "tests"],
-                           cwd=ws / "app", env={**_env(ws), "PYTHONPATH": (ws / "app").as_posix()},
-                           capture_output=True, text=True, timeout=180)
-        c["repo_ok"] = r.returncode == 0
-        reward, summary = _verify(ws)
-        n = _counts(summary)
-        c["rejects_start"] = reward == 0
-        res["start_summary"] = summary
-        res["feature_tests_failing_at_start"] = n.get("failed", 0) + n.get("error", 0)
+    nop = _verify(repo, task, _agent_phase(repo, task, oracle=False))
+    res["nop"] = nop
+    c["nop_reward_0"] = nop.get("reward") == 0.0
+    c["nop_regression_intact"] = nop.get("pass_to_pass", {}).get("broken_count") == 0
 
-        sh = subprocess.run([BASH, (task / "solution" / "solve.sh").as_posix()], env=_env(ws), capture_output=True,
-                            text=True, timeout=60)
-        c["solution_applies"] = sh.returncode == 0
-        reward, summary = _verify(ws)
-        c["solvable"] = reward == 1
-        res["solved_summary"] = summary
-        res["tests_total"] = sum(_counts(summary).values())
-        c["stable"] = _verify(ws)[0] == 1
-    finally:
-        shutil.rmtree(ws, ignore_errors=True)
+    agent_patch = _agent_phase(repo, task, oracle=True)
+    oracle = _verify(repo, task, agent_patch)
+    res["oracle"] = oracle
+    c["oracle_reward_1"] = oracle.get("reward") == 1.0
 
-    for m in mutants or []:
-        mws = _workspace(task, m.files)
-        try:
-            reward, summary = _verify(mws)
-        finally:
-            shutil.rmtree(mws, ignore_errors=True)
-        res["mutants"].append({"name": m.name, "description": m.description, "killed": reward == 0,
-                               "summary": summary})
+    failed, total = _feature_only(repo, task, agent_patch)
+    c["oracle_stable"] = failed == 0 and total > 0
+
+    res["mutants"] = []
+    if run_mutants:
+        for mp in sorted((task / "validation" / "mutants").glob("*.patch")):
+            failed, total = _feature_only(repo, task, mp.read_text(encoding="utf-8"))
+            res["mutants"].append({"name": mp.stem, "killed": failed > 0, "failed_tests": failed, "tests": total})
+        c["all_mutants_killed"] = all(m["killed"] for m in res["mutants"])
     killed = sum(m["killed"] for m in res["mutants"])
     res["mutation_score"] = f"{killed}/{len(res['mutants'])}"
-    c["all_mutants_killed"] = killed == len(res["mutants"])
+
+    lint = harbor_lint(task)
+    res["harbor_lint"] = lint
+    c["harbor_lint_clean"] = lint["ok"]
     res["valid"] = all(c.values())
     return res
-
-
-def cross_check(task_a: Path, task_b: Path) -> bool:
-    """True if A's reference solution FAILS B's tests, i.e. the two tasks really ask for different behaviour."""
-    ws = _workspace(task_b)
-    try:
-        subprocess.run([BASH, (Path(task_a) / "solution" / "solve.sh").as_posix()], env=_env(ws),
-                       capture_output=True, timeout=60)
-        return _verify(ws)[0] == 0
-    finally:
-        shutil.rmtree(ws, ignore_errors=True)
-
-
-if __name__ == "__main__":
-    print(json.dumps(validate(Path(sys.argv[1])), indent=2))

@@ -1,0 +1,111 @@
+diff --git a/src/click/__init__.py b/src/click/__init__.py
+index a34ab02..61f8c42 100644
+--- a/src/click/__init__.py
++++ b/src/click/__init__.py
+@@ -56,6 +56,7 @@ from .termui import unstyle as unstyle
+ from .types import BOOL as BOOL
+ from .types import Choice as Choice
+ from .types import DateTime as DateTime
++from .types import Duration as Duration
+ from .types import File as File
+ from .types import FLOAT as FLOAT
+ from .types import FloatRange as FloatRange
+diff --git a/src/click/types.py b/src/click/types.py
+index b6e98a9..9294b73 100644
+--- a/src/click/types.py
++++ b/src/click/types.py
+@@ -4,11 +4,13 @@ import abc
+ import collections.abc as cabc
+ import enum
+ import os
++import re
+ import stat
+ import sys
+ import typing as t
+ import uuid
+ from datetime import datetime
++from datetime import timedelta
+ from gettext import gettext as _
+ from gettext import ngettext
+ 
+@@ -907,6 +909,80 @@ class UUIDParameterType(ParamType[uuid.UUID]):
+         return "UUID"
+ 
+ 
++class Duration(ParamType[timedelta]):
++    """Converts a duration such as ``90s``, ``15m`` or ``1h30m`` into
++    a :class:`datetime.timedelta`.
++
++    :param max_seconds: Reject durations longer than this many seconds.
++    """
++
++    name = "duration"
++    _units = {
++        "h": 3600,
++        "m": 60,
++        "s": 1,
++    }
++
++    def __init__(self, max_seconds: int | None = None) -> None:
++        self.max_seconds = max_seconds
++
++    def to_info_dict(self) -> dict[str, t.Any]:
++        info_dict = super().to_info_dict()
++        info_dict["max_seconds"] = self.max_seconds
++        return info_dict
++
++    def convert(
++        self, value: t.Any, param: Parameter | None, ctx: Context | None
++    ) -> timedelta:
++        if isinstance(value, timedelta):
++            seconds = int(value.total_seconds())
++        elif isinstance(value, int) and not isinstance(value, bool):
++            seconds = value
++        else:
++            text = str(value).strip()
++            invalid = _("{value!r} is not a valid duration.").format(value=value)
++
++            if text.isdigit():
++                seconds = int(text) * self._units["s"]
++            else:
++                parts = re.findall(r"(\d+)([a-z]+)", text)
++
++                if not parts or "".join(n + u for n, u in parts) != text:
++                    self.fail(invalid, param, ctx)
++
++                order = list(self._units)
++                last = -1
++                seconds = 0
++
++                for number, unit in parts:
++                    if unit not in self._units:
++                        self.fail(invalid, param, ctx)
++
++                    index = order.index(unit)
++
++                    last = index
++                    seconds += int(number) * self._units[unit]
++
++        if seconds <= 0:
++            self.fail(
++                _("{value!r} must be greater than zero.").format(value=value), param, ctx
++            )
++
++        if self.max_seconds is not None and seconds > self.max_seconds:
++            self.fail(
++                _("{value!r} is longer than the maximum of {max} seconds.").format(
++                    value=value, max=self.max_seconds
++                ),
++                param,
++                ctx,
++            )
++
++        return timedelta(seconds=seconds)
++
++    def __repr__(self) -> str:
++        return "Duration"
++
++
+ class FileInfoDict(ParamTypeInfoDict):
+     mode: str
+     encoding: str | None
