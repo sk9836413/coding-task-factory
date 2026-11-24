@@ -265,14 +265,17 @@ def _instruction(p: dict) -> str:
     unit_list = ", ".join(f"`{u}` = {v:,}" for u, v in table.items())
     system = {"decimal": "decimal (SI) units only", "binary": "binary (IEC) units only",
               "both": "both decimal (SI) and binary (IEC) units"}[p["system"]]
+    # Examples use this task's own units, so they never contradict rule 1.
+    small, medium = [u for u in table if u != "B"][:2]
     rules = [
         f"Accept {system}: {unit_list} bytes. Any other unit is invalid.",
-        "Unit names are case-sensitive: only the exact spellings above are valid." if p["case_sensitive"] else
-        "Unit names are case-insensitive (`kb`, `KB` and `Kb` mean the same unit).",
+        (f"Unit names are case-sensitive: only the exact spellings above are valid (`{small.lower()}` is invalid)."
+         if p["case_sensitive"] else
+         f"Unit names are case-insensitive (`{small.lower()}`, `{small.upper()}` and `{small}` mean the same unit)."),
         f"A number without a unit is in `{p['default_unit']}`.",
         "The value may have surrounding whitespace and at most one space between the number and the unit "
-        "(`2 KB`). Negative numbers are invalid.",
-        ("Fractional numbers are allowed (`1.5MB`); the result is rounded down to a whole number of bytes."
+        f"(`2 {small}`). Negative numbers are invalid.",
+        (f"Fractional numbers are allowed (`1.5{medium}`); the result is rounded down to a whole number of bytes."
          if p["allow_fraction"] else
          "Fractional numbers are not allowed: fail with a message containing `fractional sizes are not allowed`."),
         "Python `int` values (for example an option default) are returned unchanged, but are still checked "

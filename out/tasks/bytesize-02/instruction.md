@@ -12,7 +12,7 @@ Command-line tools often take sizes such as cache limits or upload limits. Add a
 
 ## Rules
 1. Accept decimal (SI) units only: `B` = 1, `KB` = 1,000, `MB` = 1,000,000, `GB` = 1,000,000,000, `TB` = 1,000,000,000,000 bytes. Any other unit is invalid.
-2. Unit names are case-insensitive (`kb`, `KB` and `Kb` mean the same unit).
+2. Unit names are case-insensitive (`kb`, `KB` and `KB` mean the same unit).
 3. A number without a unit is in `B`.
 4. The value may have surrounding whitespace and at most one space between the number and the unit (`2 KB`). Negative numbers are invalid.
 5. Fractional numbers are not allowed: fail with a message containing `fractional sizes are not allowed`.

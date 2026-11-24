@@ -12,10 +12,10 @@ Command-line tools often take sizes such as cache limits or upload limits. Add a
 
 ## Rules
 1. Accept binary (IEC) units only: `B` = 1, `KiB` = 1,024, `MiB` = 1,048,576, `GiB` = 1,073,741,824, `TiB` = 1,099,511,627,776 bytes. Any other unit is invalid.
-2. Unit names are case-insensitive (`kb`, `KB` and `Kb` mean the same unit).
+2. Unit names are case-insensitive (`kib`, `KIB` and `KiB` mean the same unit).
 3. A number without a unit is in `KiB`.
-4. The value may have surrounding whitespace and at most one space between the number and the unit (`2 KB`). Negative numbers are invalid.
-5. Fractional numbers are allowed (`1.5MB`); the result is rounded down to a whole number of bytes.
+4. The value may have surrounding whitespace and at most one space between the number and the unit (`2 KiB`). Negative numbers are invalid.
+5. Fractional numbers are allowed (`1.5MiB`); the result is rounded down to a whole number of bytes.
 6. Python `int` values (for example an option default) are returned unchanged, but are still checked against `max_bytes`.
 7. `max_bytes` (optional, default `None`): a size larger than `max_bytes` fails with a message containing `larger than the maximum of <max_bytes> bytes`. A size equal to it is allowed.
 8. Any other invalid value fails with a message containing `is not a valid size`.
